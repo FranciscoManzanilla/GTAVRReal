@@ -410,6 +410,30 @@ static void RVR_TrackingTick() {
         frameIndex = *(const uint32_t*)((const uint8_t*)posePtr + 0x18);
     } RVR_EXCEPT(EXCEPTION_EXECUTE_HANDLER) {}
 
+    // NOTE: The per-frame handshake calls (RVRSeqCheck / RVRGetFrameDesc) were
+    // tried here but crashed the game (wrong argument/calling convention). They
+    // are disabled until their exact signatures are reversed. The view matrix
+    // fix at camObj+0xF0 alone produces a visible (if not yet smooth) VR image.
+
+    // DIAGNOSTIC (read-only, safe): dump the HMD pose region of g_RVRData so we
+    // can locate the live HMD angles. g_RVRData is a known-valid pointer. This
+    // reads memory only -- no proxy calls. Move your head while this fires to
+    // see which floats change (those are pitch/yaw/roll).
+    {
+        static int dumpCount = 0;
+        if (dumpCount < 5 && g_bridge.g_RVRData) {
+            dumpCount++;
+            const uint8_t* b = (const uint8_t*)g_bridge.g_RVRData;
+            RVR_TRY {
+                const float* p = (const float*)(b + 0x77C);
+                RVR_LOG("[ST] g_RVRData+0x77C: %.4f %.4f %.4f %.4f | %.4f %.4f %.4f",
+                        p[0], p[1], p[2], p[3], p[4], p[5], p[6]);
+            } RVR_EXCEPT(EXCEPTION_EXECUTE_HANDLER) {
+                RVR_LOG("[ST] g_RVRData pose dump faulted");
+            }
+        }
+    }
+
     // Steps 4-5: camera type and world rotation (natives are safe here)
     RVR_TRACE_ONCE("[ST] Tick step 4: DetectCameraType");
     g_cachedCamType = DetectCameraType();

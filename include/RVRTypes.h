@@ -136,10 +136,14 @@ struct RVRBridge {
     void*  g_RVRData      = nullptr;   // direct pointer to VR data buffer
     float* g_fRVRGameProj = nullptr;   // pointer to 16-float projection matrix
 
+    // Signatures corrected from RE of the original per-frame submit sequence:
+    //   RVRGetPoseFrame(&buf, 0) -> posePtr   (blocking pose getter)
+    //   RVRSeqCheck(poseBuf)                  (DLL's RVRGetPoseDesc: submit pose / sync)
+    //   RVRGetFrameDesc(frameCounter, outBuf) (per-frame descriptor; triggers stereo)
     using RVRLog_t              = void  (__cdecl*)(const char*, ...);
-    using RVRGetFrameDesc_t     = int   (__fastcall*)(char* outBuf, bool isRight);
+    using RVRGetFrameDesc_t     = int   (__fastcall*)(uint32_t frameCounter, void* outBuf);
     using RVRGetPoseFrame_t     = void* (__fastcall*)(void* outBuf, int flags);
-    using RVRSeqCheck_t         = uint32_t (__fastcall*)(uint8_t flags);
+    using RVRSeqCheck_t         = uint32_t (__fastcall*)(const void* poseBuf);
     using RVRWaitAndTrackHMD_t  = void  (__fastcall*)(uint8_t cl);
 
     RVRLog_t             RVRLog             = nullptr;
