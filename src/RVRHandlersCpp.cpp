@@ -81,6 +81,9 @@ extern "C" int  RVR_GetPoseCount();
 typedef void(*ContinuationFn)();
 extern "C" ContinuationFn s_cont[6] = {};
 
+// Counts ViewInverse handler invocations (render thread); read by the heartbeat.
+extern "C" volatile long g_viewInverseCalls = 0;
+
 // RVRPatches::s_saved is defined in this translation unit because the ASM
 // file references s_cont (also here) and both need the same linkage scope.
 namespace RVRPatches { SavedPatch s_saved[6] = {}; }
@@ -175,6 +178,19 @@ extern "C" void RVR_ViewInverseC(void* camObj) {
     __try {
         const uint32_t vrState = *(const uint32_t*)g_bridge.g_RVRData;
         if (vrState == 0) return;
+
+        // The engine writes the view matrix at this site ~27x per frame (one
+        // per render camera: shadows, reflections, water, mirrors, main view).
+        // Feeding all of them to the proxy makes it reproject with the wrong
+        // camera -> frozen/garbage image. Filter to the MAIN gameplay camera
+        // by its FOV (camObj+0x70). Shadow/reflection passes use very different
+        // FOV/near/far values; the gameplay camera is roughly 20-75 degrees.
+        float camFov = *(const float*)((const uint8_t*)camObj + 0x70);
+        RVR_TRACE_ONCE("[RT] first camObj FOV=%.2f", camFov);
+        if (!(camFov >= 20.f && camFov <= 75.f))
+            return;  // skip non-gameplay camera passes
+
+        g_viewInverseCalls++;  // count only ACCEPTED (main-camera) passes
 
         RVR_TRACE_ONCE("[RT] ViewInverse: reading view matrix");
         RVRMatrix44 view{};

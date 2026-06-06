@@ -143,7 +143,7 @@ struct RVRBridge {
     using RVRLog_t              = void  (__cdecl*)(const char*, ...);
     using RVRGetFrameDesc_t     = int   (__fastcall*)(uint32_t frameCounter, void* outBuf);
     using RVRGetPoseFrame_t     = void* (__fastcall*)(void* outBuf, int flags);
-    using RVRSeqCheck_t         = uint32_t (__fastcall*)(const void* poseBuf);
+    using RVRSeqCheck_t         = uint32_t (__fastcall*)(const void* poseBuf, void* outDesc);
     using RVRWaitAndTrackHMD_t  = void  (__fastcall*)(uint8_t cl);
 
     RVRLog_t             RVRLog             = nullptr;

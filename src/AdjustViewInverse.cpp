@@ -94,6 +94,11 @@
 #include <cstring>
 #include <xmmintrin.h>
 
+// Live HMD orientation quaternion, published by the script thread (RealVR.cpp).
+extern "C" float g_hmdQuat[4];
+extern "C" int   g_headTrackOn;   // 0 = pass-through view, 1 = apply HMD quat
+extern "C" int   g_htMode;        // quaternion convention selector (cycled with 'J')
+
 // Ring-buffer: local copy of the processed view matrix for the script thread.
 static RVRPoseSlot s_poseRing[4];
 static int         s_poseCount = 0;
@@ -137,46 +142,35 @@ extern "C" void RVR_AdjustViewInverse(
     if (!gameView || !bridge) return;
 
     // ------------------------------------------------------------------
-    // Step 1: Read HMD pose from g_RVRData.
-    // Protected with SEH because g_RVRData may not be fully initialized
-    // on the first few frames after the VR session starts.
+    // Step 1+2: Build the HMD rotation matrix from the live quaternion that the
+    // script thread publishes (posePtr+0x00). g_RVRData+0x77C is unused (it is
+    // never populated -- it reads as zero -- because that depends on a proxy
+    // call we cannot make). The quaternion gives full head orientation.
     // ------------------------------------------------------------------
-    float hmdPitch = 0.f, hmdYaw = 0.f, hmdRoll = 0.f;
     float headOffset = headOffsetHint;
 
-    if (bridge->g_RVRData) {
-        uint32_t slot = frameIndex & 3u;
-        const uint8_t* base = (const uint8_t*)bridge->g_RVRData;
-        const float* p = (const float*)(base + slot * POSE_IN_STRIDE + POSE_IN_BASE);
-        __try {
-            hmdPitch   = p[0];
-            hmdYaw     = p[1];
-            hmdRoll    = p[2];
-            headOffset = p[3];
-        } __except(EXCEPTION_EXECUTE_HANDLER) {
-            // g_RVRData not ready; use identity pose this frame.
-        }
-    }
+    // Pass the game view matrix through UNROTATED. Head-tracking is now done by
+    // the proxy's reprojection (it reads the HMD quaternion the script thread
+    // writes to g_RVRData+0x77C). Rotating the matrix here too would double-apply.
+    // (g_htMode/K kept for future use; not applied in proxy-reprojection mode.)
+    float qx = 0.f, qy = 0.f, qz = 0.f, qw = 1.f;
+    (void)g_htMode;
 
-    // Diagnostic: dump the game view matrix we read + HMD angles (first call only).
-    RVR_TRACE_ONCE("[RT] GameView read: r0=[%.3f %.3f %.3f %.3f] r3(pos)=[%.3f %.3f %.3f]",
-        gameView->at(0,0), gameView->at(0,1), gameView->at(0,2), gameView->at(0,3),
-        gameView->at(3,0), gameView->at(3,1), gameView->at(3,2));
-    RVR_TRACE_ONCE("[RT] HMD angles: pitch=%.3f yaw=%.3f roll=%.3f headOff=%.3f",
-        hmdPitch, hmdYaw, hmdRoll, headOffset);
+    RVR_TRACE_ONCE("[RT] GameView read: r0=[%.3f %.3f %.3f] pos=[%.3f %.3f %.3f] quat=[%.3f %.3f %.3f %.3f]",
+        gameView->at(0,0), gameView->at(0,1), gameView->at(0,2),
+        gameView->at(3,0), gameView->at(3,1), gameView->at(3,2),
+        qx, qy, qz, qw);
 
-    // ------------------------------------------------------------------
-    // Step 2: Build HMD rotation matrix.
-    // Order: Ry(yaw) * Rx(pitch) * Rz(roll)
-    // ------------------------------------------------------------------
-    const float cy = cosf(hmdYaw),   sy = sinf(hmdYaw);
-    const float cp = cosf(hmdPitch), sp = sinf(hmdPitch);
-    const float cr = cosf(hmdRoll),  sr = sinf(hmdRoll);
-
+    // Quaternion -> 3x3 rotation matrix (row-major).
+    // NOTE: axis convention OpenVR(Y-up,-Z-fwd) vs GTA may need sign tweaks;
+    // start with the direct mapping and adjust signs based on observed behavior.
+    const float xx=qx*qx, yy=qy*qy, zz=qz*qz;
+    const float xy=qx*qy, xz=qx*qz, yz=qy*qz;
+    const float wx=qw*qx, wy=qw*qy, wz=qw*qz;
     const float hmdRot[9] = {
-        cy*cr + sy*sp*sr,  -cy*sr + sy*sp*cr,  sy*cp,
-        cp*sr,              cp*cr,             -sp,
-       -sy*cr + cy*sp*sr,   sy*sr + cy*sp*cr,  cy*cp
+        1.f-2.f*(yy+zz),  2.f*(xy-wz),     2.f*(xz+wy),
+        2.f*(xy+wz),      1.f-2.f*(xx+zz), 2.f*(yz-wx),
+        2.f*(xz-wy),      2.f*(yz+wx),     1.f-2.f*(xx+yy)
     };
 
     // ------------------------------------------------------------------

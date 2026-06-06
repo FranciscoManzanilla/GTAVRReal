@@ -127,6 +127,28 @@ uint32_t               g_frameSeq    = 0;
 CameraType             g_cachedCamType = CT_OTHER;  // read by render thread
 RVRHash::ScriptCategory g_cachedScriptCat = RVRHash::SC_NONE;
 
+// Live HMD pose, read from the RVRGetPoseFrame buffer (posePtr+0x00) on the
+// script thread and consumed by the render thread's AdjustViewInverse.
+// Layout confirmed by RE: posePtr+0x00 = quaternion [x,y,z,w], +0x10 = position.
+extern "C" float g_hmdQuat[4] = {0.f, 0.f, 0.f, 1.f};  // x, y, z, w
+extern "C" float g_hmdPos[3]  = {0.f, 0.f, 0.f};       // x, y, z (meters)
+
+// Frame-begin flag (0x00 stable / 0x55 full stereo cycle). Toggle with 'B'.
+// Default 0x55 now that the 2-arg handshake no longer crashes.
+static uint8_t g_frameBeginFlag = 0x55;
+
+// Head-tracking on/off (toggle with 'H'). OFF by default: the view matrix is
+// passed through unrotated (the known-working image). ON applies the HMD
+// quaternion (may need axis tuning).
+extern "C" int g_headTrackOn = 1;   // head-tracking ON by default (now relative-safe)
+extern "C" int g_htMode = 0;   // quaternion convention (0-5), cycle with 'K'
+extern "C" volatile long g_viewInverseCalls;  // defined in RVRHandlersCpp.cpp
+
+// HMD recenter reference: the delta published to the render thread is relative
+// to this captured orientation. Cleared on F11 so the next frame re-captures it.
+static float g_hmdQuatRef[4] = {0.f, 0.f, 0.f, 1.f};
+static bool  g_hmdRefSet     = false;
+
 static HMODULE g_hModule        = nullptr;
 static bool    g_patchesApplied = false;
 
@@ -389,8 +411,13 @@ static void RVR_TrackingTick() {
     }
 
     // Step 1: signal frame start to DLL (RVRSeqCheck equivalent)
-    RVR_TRACE_ONCE("[ST] Tick step 1: RVRWaitAndTrackHMD(0x00)");
-    g_bridge.RVRWaitAndTrackHMD(0x00);
+    // Frame-begin flag, selectable at runtime (default 0x00 = stable).
+    //   0x00 : proxy frame cycle does not fully start -> slow (~1 fps) but STABLE.
+    //   0x55 : matches the original Update(); starts the real stereo cycle, but
+    //          the proxy then renders stereo with data we cannot fully reproduce
+    //          and crashes after ~1s. Toggle with the 'B' hotkey to experiment.
+    RVR_TRACE_ONCE("[ST] Tick step 1: RVRWaitAndTrackHMD(0x%02X)", g_frameBeginFlag);
+    g_bridge.RVRWaitAndTrackHMD(g_frameBeginFlag);
 
     // Step 2: get pose pointer from DLL
     void* posePtr = nullptr;
@@ -410,26 +437,92 @@ static void RVR_TrackingTick() {
         frameIndex = *(const uint32_t*)((const uint8_t*)posePtr + 0x18);
     } RVR_EXCEPT(EXCEPTION_EXECUTE_HANDLER) {}
 
-    // NOTE: The per-frame handshake calls (RVRSeqCheck / RVRGetFrameDesc) were
-    // tried here but crashed the game (wrong argument/calling convention). They
-    // are disabled until their exact signatures are reversed. The view matrix
-    // fix at camObj+0xF0 alone produces a visible (if not yet smooth) VR image.
+    // Step 3b: complete the per-frame handshake (RVRSeqCheck + RVRGetFrameDesc).
+    // Now that frame-begin uses the correct flag (0x55), the proxy is in a valid
+    // frame state for these completion calls. A begun frame MUST be completed or
+    // the proxy desyncs and crashes (observed: 0x55 begin without completion
+    // crashed after ~1s). Full per-frame order matches the original Update():
+    //   RVRWaitAndTrackHMD(0x55) -> RVRGetPoseFrame -> RVRSeqCheck -> RVRGetFrameDesc
+    // Static buffers avoid any stack overflow from the DLL writing the output.
+    if (g_frameBeginFlag == 0x55) {
+        // RVRGetPoseDesc (our RVRSeqCheck) takes TWO args: rcx=poseBuf, rdx=outDesc.
+        // It reads poseBuf[0x00..0x1B] and WRITES the pose descriptor to outDesc.
+        // The missing outDesc arg was the crash cause (it wrote to a garbage rdx).
+        static uint8_t s_poseBuf[4096];
+        static uint8_t s_poseDescOut[4096];
+        static uint8_t s_frameDescOut[4096];
+        RVR_TRACE_ONCE("[ST] 3b: before RVRSeqCheck (2-arg)");
+        RVR_TRY {
+            memcpy(s_poseBuf, posePtr, 0x20);  // it reads up to +0x1B
+            if (g_bridge.RVRSeqCheck)
+                g_bridge.RVRSeqCheck(s_poseBuf, s_poseDescOut);
+            RVR_TRACE_ONCE("[ST] 3b: after RVRSeqCheck / before RVRGetFrameDesc");
 
-    // DIAGNOSTIC (read-only, safe): dump the HMD pose region of g_RVRData so we
-    // can locate the live HMD angles. g_RVRData is a known-valid pointer. This
-    // reads memory only -- no proxy calls. Move your head while this fires to
-    // see which floats change (those are pitch/yaw/roll).
+            // RVRGetFrameDesc with the proxy's own frame index + 1 (matches the
+            // original). Forcing the eye bit (AER alternation) ourselves broke the
+            // proxy's frame sync, so we let the proxy drive the frame index.
+            if (g_bridge.RVRGetFrameDesc && g_bridge.g_RVRData) {
+                uint32_t fc = *(const uint32_t*)
+                    ((const uint8_t*)g_bridge.g_RVRData + 0x34) + 1u;
+                g_bridge.RVRGetFrameDesc(fc, s_frameDescOut);
+            }
+            RVR_TRACE_ONCE("[ST] 3b: handshake complete OK");
+        } RVR_EXCEPT(EXCEPTION_EXECUTE_HANDLER) {
+            RVR_TRACE_ONCE("[ST] 3b: EXCEPTION in handshake (suppressed)");
+        }
+    }
+
+    // Step 3a: read the live HMD pose from posePtr (quaternion + position).
+    // Safe: copy to a local first (posePtr+0x00..0x1F is mapped), then publish
+    // to the globals consumed by the render thread. No proxy calls.
     {
-        static int dumpCount = 0;
-        if (dumpCount < 5 && g_bridge.g_RVRData) {
-            dumpCount++;
-            const uint8_t* b = (const uint8_t*)g_bridge.g_RVRData;
-            RVR_TRY {
-                const float* p = (const float*)(b + 0x77C);
-                RVR_LOG("[ST] g_RVRData+0x77C: %.4f %.4f %.4f %.4f | %.4f %.4f %.4f",
-                        p[0], p[1], p[2], p[3], p[4], p[5], p[6]);
-            } RVR_EXCEPT(EXCEPTION_EXECUTE_HANDLER) {
-                RVR_LOG("[ST] g_RVRData pose dump faulted");
+        float local[8] = {};
+        bool ok = false;
+        RVR_TRY {
+            memcpy(local, posePtr, sizeof(local));  // 0x20 bytes
+            ok = true;
+        } RVR_EXCEPT(EXCEPTION_EXECUTE_HANDLER) { ok = false; }
+        if (ok) {
+            // Normalize the raw HMD quaternion.
+            float qx=local[0], qy=local[1], qz=local[2], qw=local[3];
+            float len = sqrtf(qx*qx+qy*qy+qz*qz+qw*qw);
+            if (len > 1e-6f) { float inv=1.f/len; qx*=inv; qy*=inv; qz*=inv; qw*=inv; }
+
+            // Capture a reference orientation the first time (and after recenter,
+            // which clears g_hmdRefSet). We then publish the RELATIVE rotation
+            // delta = conj(ref) * current, so at the neutral pose the delta is
+            // identity (no rotation, image unchanged) and head movement applies
+            // a relative rotation. Applying the absolute quat is what made the
+            // image vanish earlier.
+            if (!g_hmdRefSet) {
+                g_hmdQuatRef[0]=qx; g_hmdQuatRef[1]=qy; g_hmdQuatRef[2]=qz; g_hmdQuatRef[3]=qw;
+                g_hmdRefSet = true;
+            }
+            // conj(ref)
+            float rx=-g_hmdQuatRef[0], ry=-g_hmdQuatRef[1], rz=-g_hmdQuatRef[2], rw=g_hmdQuatRef[3];
+            // delta = conj(ref) * current   (Hamilton product)
+            float dx = rw*qx + rx*qw + ry*qz - rz*qy;
+            float dy = rw*qy - rx*qz + ry*qw + rz*qx;
+            float dz = rw*qz + rx*qy - ry*qx + rz*qw;
+            float dw = rw*qw - rx*qx - ry*qy - rz*qz;
+            g_hmdQuat[0]=dx; g_hmdQuat[1]=dy; g_hmdQuat[2]=dz; g_hmdQuat[3]=dw;
+
+            g_hmdPos[0]=local[4]; g_hmdPos[1]=local[5]; g_hmdPos[2]=local[6];
+            RVR_TRACE_ONCE("[ST] HMD delta quat: %.3f %.3f %.3f %.3f",
+                           g_hmdQuat[0], g_hmdQuat[1], g_hmdQuat[2], g_hmdQuat[3]);
+
+            // RE finding: the original writes the HMD quaternion to g_RVRData+0x77C
+            // (16 bytes), inside a 0x38-byte pose struct (0x77C..0x7B3). The next
+            // block (matrix) starts at 0x7B4. The earlier crash was from writing
+            // 4 slots at stride 0x1C, which clobbered 0x7B4. Write ONLY 0x77C
+            // (16 bytes) -- safe, within the pose struct -- so the proxy can use
+            // the head pose for reprojection. Gated by 'H' so we can compare.
+            if (g_headTrackOn && g_bridge.g_RVRData) {
+                uint8_t* base = (uint8_t*)g_bridge.g_RVRData;
+                RVR_TRY {
+                    float* p = (float*)(base + 0x77C);
+                    p[0]=qx; p[1]=qy; p[2]=qz; p[3]=qw;
+                } RVR_EXCEPT(EXCEPTION_EXECUTE_HANDLER) {}
             }
         }
     }
@@ -533,6 +626,27 @@ static void RVR_TrackingTick() {
         RVRNat::SetTimeScale(0.5f);
 
     RVR_TRACE_ONCE("[ST] RVR_TrackingTick FIRST FULL PASS COMPLETE");
+
+    // Heartbeat: measure how many tracking ticks run per ~2s window. If this is
+    // ~1-2 it means the script thread is blocked (RVRGetPoseFrame/WaitGetPoses
+    // timing out). If it is high (>60) the loop is fine and the slowness is in
+    // the proxy's Present/Submit path.
+    {
+        static uint64_t s_lastBeat = 0;
+        static uint32_t s_tickCount = 0;
+        s_tickCount++;
+        uint64_t now = GetTickCount64();
+        if (s_lastBeat == 0) s_lastBeat = now;
+        if (now - s_lastBeat >= 2000) {
+            static long s_lastVI = 0;
+            long viNow = g_viewInverseCalls;
+            RVR_LOG("[ST] HEARTBEAT: %u script ticks, %ld ViewInverse(render) in %llu ms (flag=0x%02X)",
+                    s_tickCount, (viNow - s_lastVI), (now - s_lastBeat), g_frameBeginFlag);
+            s_lastVI = viNow;
+            s_tickCount = 0;
+            s_lastBeat = now;
+        }
+    }
 }
 
 // =============================================================================
@@ -580,6 +694,7 @@ static void OnKeyboard(DWORD key, WORD, BYTE, BOOL, BOOL, BOOL, BOOL isUpNow) {
         break;
     case VK_F11:
         g_worldRot = {0,0,0,1}; g_frameSeq = 0;
+        g_hmdRefSet = false;   // re-capture the neutral HMD orientation next frame
         RVR_LOG("HMD recentered (F11)");
         if (g_bridge.RVRLog) g_bridge.RVRLog("Script is asking to recenter HMD\n");
         break;
@@ -590,6 +705,19 @@ static void OnKeyboard(DWORD key, WORD, BYTE, BOOL, BOOL, BOOL, BOOL isUpNow) {
     case 'T':
         g_config.dominantEye = (g_config.dominantEye + 1) % 3;
         RVR_LOG("DominantEye = %d", g_config.dominantEye);
+        break;
+    case 'B':
+        g_frameBeginFlag = (g_frameBeginFlag == 0x00) ? 0x55 : 0x00;
+        RVR_LOG("FrameBeginFlag = 0x%02X (%s)", g_frameBeginFlag,
+                g_frameBeginFlag == 0x55 ? "EXPERIMENTAL stereo cycle" : "STABLE");
+        break;
+    case 'H':
+        g_headTrackOn = !g_headTrackOn;
+        RVR_LOG("HeadTracking = %s", g_headTrackOn ? "ON" : "OFF");
+        break;
+    case 'K':
+        g_htMode = (g_htMode + 1) % 6;
+        RVR_LOG("HeadTrack convention mode = %d", g_htMode);
         break;
     case 'Y':
         g_config.headingControl = (g_config.headingControl + 1) % 3;
@@ -617,7 +745,7 @@ BOOL APIENTRY DllMain(HMODULE hInstance, DWORD reason, LPVOID) {
         g_hModule = hInstance;
         DisableThreadLibraryCalls(hInstance);
         RVRFileLog::Init();
-        RVR_LOG("ASI loaded (DLL_PROCESS_ATTACH)");
+        RVR_LOG("ASI loaded (DLL_PROCESS_ATTACH) -- BUILD: best-v19 (" __DATE__ " " __TIME__ ")");
         scriptRegister(hInstance, ScriptMain);
         keyboardHandlerRegister(OnKeyboard);
         break;
