@@ -136,15 +136,23 @@ void InitHandlers(const GamePointers& gp) {
 
 // ----------------------------------------------------------------------------
 // ReadViewMatrix
-// Reads the 4x4 row-major view matrix from a GTA camera object.
-// Offsets confirmed from RE of the ViewInverse site in version 73.
+// Reads the camera matrix (camera-to-world frame) from a GTA camera object.
+//
+// Offset CONFIRMED by runtime memory dump (ver 73): the orthonormal camera
+// frame lives at camObj+0xF0, NOT +0x70 (which holds FOV/near/far). Layout:
+//   +0xF0  = right   vector (xyz, w garbage)
+//   +0x100 = up      vector (xyz, w garbage)
+//   +0x110 = forward vector (xyz, w garbage)
+//   +0x120 = position (xyz world coords, w garbage)
+// We copy only the xyz of each row (12 bytes) and set the w column explicitly
+// to avoid the adjacent non-matrix fields.
 // ----------------------------------------------------------------------------
 static inline void ReadViewMatrix(const void* camObj, RVRMatrix44& out) {
     const uint8_t* p = (const uint8_t*)camObj;
-    memcpy(&out.m[0],  p + 0x70, 16);
-    memcpy(&out.m[4],  p + 0x80, 16);
-    memcpy(&out.m[8],  p + 0x90, 16);
-    memcpy(&out.m[12], p + 0xa0, 16);
+    memcpy(&out.m[0],  p + 0xF0,  12); out.m[3]  = 0.f;  // right
+    memcpy(&out.m[4],  p + 0x100, 12); out.m[7]  = 0.f;  // up
+    memcpy(&out.m[8],  p + 0x110, 12); out.m[11] = 0.f;  // forward
+    memcpy(&out.m[12], p + 0x120, 12); out.m[15] = 1.f;  // position
 }
 
 // ----------------------------------------------------------------------------
@@ -169,22 +177,6 @@ extern "C" void RVR_ViewInverseC(void* camObj) {
         if (vrState == 0) return;
 
         RVR_TRACE_ONCE("[RT] ViewInverse: reading view matrix");
-
-        // DIAGNOSTIC: dump camObj as floats from 0x00..0xFC to locate the real
-        // view matrix (its rotation rows are unit vectors, values in [-1,1]).
-        {
-            static bool dumped = false;
-            if (!dumped) {
-                dumped = true;
-                const float* f = (const float*)camObj;
-                for (int base = 0; base < 0x100; base += 0x10) {
-                    int idx = base / 4;
-                    RVR_LOG("[RT] camObj+0x%02X: %12.4f %12.4f %12.4f %12.4f",
-                            base, f[idx+0], f[idx+1], f[idx+2], f[idx+3]);
-                }
-            }
-        }
-
         RVRMatrix44 view{};
         ReadViewMatrix(camObj, view);
 

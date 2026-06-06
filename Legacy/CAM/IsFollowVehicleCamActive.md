@@ -1,0 +1,11 @@
+# _IS_FOLLOW_VEHICLE_CAM_ACTIVE
+
+--- ns: CAM --- ## IS_FOLLOW_VEHICLE_CAM_ACTIVE  // 0xCBBDE6D335D6D496 0x8DD49B77 BOOL IS_FOLLOW_VEHICLE_CAM_ACTIVE();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x8DD49B77
+* Build: 323
+

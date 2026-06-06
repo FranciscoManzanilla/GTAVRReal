@@ -1,0 +1,14 @@
+# _SET_ALL_LOW_PRIORITY_VEHICLE_GENERATORS_ACTIVE
+
+--- ns: VEHICLE --- ## SET_ALL_LOW_PRIORITY_VEHICLE_GENERATORS_ACTIVE  // 0x608207E7A8FB787C 0x87F767F2 void SET_ALL_LOW_PRIORITY_VEHICLE_GENERATORS_ACTIVE(BOOL active);   ## Parameters * **active**:
+
+### Parameters
+* BOOL active
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x87F767F2
+* Build: 323
+

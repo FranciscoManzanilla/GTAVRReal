@@ -1,0 +1,14 @@
+# _NETWORK_SESSION_GET_KICK_VOTE
+
+--- ns: NETWORK aliases: ["_NETWORK_SESSION_ARE_PLAYERS_VOTING_TO_KICK","_NETWORK_SESSION_IS_PLAYER_VOTED_TO_KICK"] --- ## NETWORK_SESSION_GET_KICK_VOTE  // 0xD6D09A6F32F49EF1 0x8A559D26 BOOL NETWORK_SESSION_GET_KICK_VOTE(Player player);  ## Parameters * **player**:  ## Return value
+
+### Parameters
+* Player player
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x8A559D26
+* Build: 323
+

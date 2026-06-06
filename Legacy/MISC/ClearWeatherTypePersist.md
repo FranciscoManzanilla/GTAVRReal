@@ -1,0 +1,11 @@
+# _CLEAR_WEATHER_TYPE_PERSIST
+
+--- ns: MISC --- ## CLEAR_WEATHER_TYPE_PERSIST  // 0xCCC39339BEF76CF5 0x6AB757D8 void CLEAR_WEATHER_TYPE_PERSIST();
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x6AB757D8
+* Build: 323
+

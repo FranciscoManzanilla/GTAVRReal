@@ -1,0 +1,11 @@
+# _BUSYSPINNER_IS_DISPLAYING
+
+--- ns: HUD aliases: ["0xB2A592B04648A9CB"] --- ## BUSYSPINNER_IS_DISPLAYING  // 0xB2A592B04648A9CB 0x3AF34DEF cs_type(Pickup) BOOL BUSYSPINNER_IS_DISPLAYING();  ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x3AF34DEF
+* Build: 323
+

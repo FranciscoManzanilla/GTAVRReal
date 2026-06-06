@@ -1,0 +1,11 @@
+# _IS_COMMERCE_DATA_VALID
+
+--- ns: NETWORK aliases: ["0xEA14EEF5B7CD2C30"] --- ## IS_COMMERCE_DATA_VALID  // 0xEA14EEF5B7CD2C30 0xEEFC8A55 BOOL IS_COMMERCE_DATA_VALID();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0xEEFC8A55
+* Build: 323
+

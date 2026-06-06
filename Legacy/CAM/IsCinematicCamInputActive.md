@@ -1,0 +1,12 @@
+# _IS_CINEMATIC_CAM_INPUT_ACTIVE
+
+--- ns: CAM aliases: ["0xF5F1E89A970B7796", "_IS_CINEMATIC_CAM_ACTIVE"] --- ## IS_CINEMATIC_CAM_INPUT_ACTIVE  // 0xF5F1E89A970B7796 0x01A900C84 BOOL IS_CINEMATIC_CAM_INPUT_ACTIVE();  NativeDB Introduced: v1493
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x1A900C84
+* Build: 1493
+* Tests some cinematic camera flags
+

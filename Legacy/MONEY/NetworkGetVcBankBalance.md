@@ -1,0 +1,11 @@
+# _NETWORK_GET_VC_BANK_BALANCE
+
+--- ns: MONEY aliases: ["0x76EF28DA05EA395A"] --- ## NETWORK_GET_VC_BANK_BALANCE  // 0x76EF28DA05EA395A 0x16184FB5 int NETWORK_GET_VC_BANK_BALANCE();  ## Return value
+
+### Return Value
+* int
+
+### Notes
+* AP Hash: 0x0x16184FB5
+* Build: 323
+

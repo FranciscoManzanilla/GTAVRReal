@@ -1,0 +1,11 @@
+# _UGC_HAS_MODIFY_FINISHED
+
+--- ns: NETWORK aliases: ["0x299EF3C576773506"] --- ## UGC_HAS_MODIFY_FINISHED  // 0x299EF3C576773506 0x611E0BE2 cs_type(Any) BOOL UGC_HAS_MODIFY_FINISHED();  ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x611E0BE2
+* Build: 323
+

@@ -1,0 +1,11 @@
+# _GET_GPS_BLIP_ROUTE_FOUND
+
+--- ns: PATHFIND aliases: ["0x869DAACBBE9FA006"] --- ## GET_GPS_BLIP_ROUTE_FOUND  // 0x869DAACBBE9FA006 0x286F82CC BOOL GET_GPS_BLIP_ROUTE_FOUND();  ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x286F82CC
+* Build: 323
+

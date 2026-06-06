@@ -1,0 +1,11 @@
+# _GET_STATUS_OF_MISSION_REPEAT_SAVE
+
+--- ns: MISC aliases: ["0x2B5E102E4A42F2BF"] --- ## GET_STATUS_OF_MISSION_REPEAT_SAVE  // 0x2B5E102E4A42F2BF 0x144AAF22 int GET_STATUS_OF_MISSION_REPEAT_SAVE();  ## Return value
+
+### Return Value
+* int
+
+### Notes
+* AP Hash: 0x0x144AAF22
+* Build: 323
+

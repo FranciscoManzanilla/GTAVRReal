@@ -1,0 +1,11 @@
+# _CLEAR_GPS_PLAYER_WAYPOINT
+
+--- ns: HUD --- ## CLEAR_GPS_PLAYER_WAYPOINT  // 0xFF4FB7C8CDFA3DA7 0x0B9C7FC2 void CLEAR_GPS_PLAYER_WAYPOINT();
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x0B9C7FC2
+* Build: 323
+

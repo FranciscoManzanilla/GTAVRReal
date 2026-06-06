@@ -1,0 +1,11 @@
+# _PLAYSTATS_STOP_TRACKING_STUNTS
+
+--- ns: STATS aliases: ["0x8A800DACCC0DA55D", "_PLAYSTATS_STUNT_PERFORMED_EVENT_DISALLOW_TRIGGER"] --- ## PLAYSTATS_STOP_TRACKING_STUNTS  // 0x8A800DACCC0DA55D void PLAYSTATS_STOP_TRACKING_STUNTS();  Disallows CEventNetworkStuntPerformed to be triggered (Resets [`PLAYSTATS_START_TRACKING_STUNTS`](#_0x928DBFB892638EF3)).
+
+### Return Value
+* void
+
+### Notes
+* Build: 791
+* Disallows CEventNetworkStuntPerformed to be triggered.
+

@@ -1,0 +1,11 @@
+# _IS_THIS_A_MINIGAME_SCRIPT
+
+--- ns: MISC --- ## IS_THIS_A_MINIGAME_SCRIPT  // 0x7B30F65D7B710098 0x7605EF6F BOOL IS_THIS_A_MINIGAME_SCRIPT();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x7605EF6F
+* Build: 323
+

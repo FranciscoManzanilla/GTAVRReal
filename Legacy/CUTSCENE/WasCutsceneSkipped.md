@@ -1,0 +1,11 @@
+# _WAS_CUTSCENE_SKIPPED
+
+--- ns: CUTSCENE --- ## WAS_CUTSCENE_SKIPPED  // 0x40C8656EDAEDD569 0xC9B6949D BOOL WAS_CUTSCENE_SKIPPED();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0xC9B6949D
+* Build: 323
+

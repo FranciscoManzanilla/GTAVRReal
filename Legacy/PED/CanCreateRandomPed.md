@@ -1,0 +1,14 @@
+# _CAN_CREATE_RANDOM_PED
+
+--- ns: PED --- ## CAN_CREATE_RANDOM_PED  // 0x3E8349C08E4B82E4 0xF9ABE88F BOOL CAN_CREATE_RANDOM_PED(BOOL unk);   ## Parameters * **unk**:  ## Return value
+
+### Parameters
+* BOOL p0
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0xF9ABE88F
+* Build: 323
+

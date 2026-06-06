@@ -1,0 +1,11 @@
+# _NETWORK_IS_IN_MP_CUTSCENE
+
+--- ns: NETWORK --- ## NETWORK_IS_IN_MP_CUTSCENE  // 0x6CC27C9FA2040220 0x4BB33316 BOOL NETWORK_IS_IN_MP_CUTSCENE();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x4BB33316
+* Build: 323
+

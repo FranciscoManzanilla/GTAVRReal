@@ -1,0 +1,15 @@
+# _CLEAR_FLOATING_HELP
+
+--- ns: HUD --- ## CLEAR_FLOATING_HELP  // 0x50085246ABD3FEFA 0xB181F88F void CLEAR_FLOATING_HELP(int hudIndex, BOOL p1);  ## Parameters * **hudIndex**: * **p1**:
+
+### Parameters
+* int hudIndex
+* BOOL p1
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0xB181F88F
+* Build: 323
+

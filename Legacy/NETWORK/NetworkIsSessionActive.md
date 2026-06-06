@@ -1,0 +1,11 @@
+# _NETWORK_IS_SESSION_ACTIVE
+
+--- ns: NETWORK --- ## NETWORK_IS_SESSION_ACTIVE  // 0xD83C2B94E7508980 0x715CB8C4 BOOL NETWORK_IS_SESSION_ACTIVE();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x715CB8C4
+* Build: 323
+

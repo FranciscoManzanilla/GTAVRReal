@@ -1,0 +1,11 @@
+# _IS_NEW_LOAD_SCENE_ACTIVE
+
+--- ns: STREAMING --- ## IS_NEW_LOAD_SCENE_ACTIVE  // 0xA41A05B6CB741B85 0xAD234B7F BOOL IS_NEW_LOAD_SCENE_ACTIVE();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0xAD234B7F
+* Build: 323
+

@@ -1,0 +1,14 @@
+# _NETWORK_OVERRIDE_SEND_RESTRICTIONS_ALL
+
+--- ns: NETWORK aliases: ["0x57B192B4D4AD23D5","_NETWORK_CHAT_MUTE"] --- ## NETWORK_OVERRIDE_SEND_RESTRICTIONS_ALL  // 0x57B192B4D4AD23D5 0x2F98B405 void NETWORK_OVERRIDE_SEND_RESTRICTIONS_ALL(BOOL toggle);  ## Parameters * **toggle**:
+
+### Parameters
+* BOOL toggle
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x2F98B405
+* Build: 323
+

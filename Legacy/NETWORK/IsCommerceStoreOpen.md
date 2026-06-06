@@ -1,0 +1,11 @@
+# _IS_COMMERCE_STORE_OPEN
+
+--- ns: NETWORK aliases: ["0x2EAC52B4019E2782"] --- ## IS_COMMERCE_STORE_OPEN  // 0x2EAC52B4019E2782 0x25E2DBA9 BOOL IS_COMMERCE_STORE_OPEN();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x25E2DBA9
+* Build: 323
+

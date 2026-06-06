@@ -1,0 +1,14 @@
+# _CASCADE_SHADOWS_SET_AIRCRAFT_MODE
+
+--- ns: GRAPHICS aliases: ["0x6DDBF9DFFC4AC080"] --- ## CASCADE_SHADOWS_SET_AIRCRAFT_MODE  // 0x6DDBF9DFFC4AC080 0x9F470BE3 void CASCADE_SHADOWS_SET_AIRCRAFT_MODE(BOOL p0);  ## Parameters * **p0**:
+
+### Parameters
+* BOOL p0
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x9F470BE3
+* Build: 323
+

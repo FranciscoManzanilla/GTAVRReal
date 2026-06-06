@@ -1,0 +1,11 @@
+# _DOES_PLAYER_VEH_HAVE_RADIO
+
+--- ns: AUDIO aliases: ["0x109697E2FFBAC8A1"] --- ## DOES_PLAYER_VEH_HAVE_RADIO  // 0x109697E2FFBAC8A1 0x46B0C696 BOOL DOES_PLAYER_VEH_HAVE_RADIO();  ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x46B0C696
+* Build: 323
+

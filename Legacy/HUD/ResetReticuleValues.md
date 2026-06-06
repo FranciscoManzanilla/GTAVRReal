@@ -1,0 +1,11 @@
+# _RESET_RETICULE_VALUES
+
+--- ns: HUD --- ## RESET_RETICULE_VALUES  // 0x12782CE0A636E9F0 0xBE27AA3F void RESET_RETICULE_VALUES();
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0xBE27AA3F
+* Build: 323
+

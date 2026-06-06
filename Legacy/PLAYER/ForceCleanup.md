@@ -1,0 +1,15 @@
+# _FORCE_CLEANUP
+
+--- ns: PLAYER --- ## FORCE_CLEANUP  // 0xBC8983F38F78ED51 0xFDAAEA2B void FORCE_CLEANUP(int cleanupFlags);  used with 1,2,8,64,128 in the scripts  ## Parameters * **cleanupFlags**:
+
+### Parameters
+* int cleanupFlags
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0xFDAAEA2B
+* Build: 323
+* used with 1,2,8,64,128 in the scripts
+

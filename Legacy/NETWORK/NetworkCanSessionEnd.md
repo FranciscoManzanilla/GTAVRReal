@@ -1,0 +1,11 @@
+# _NETWORK_CAN_SESSION_END
+
+--- ns: NETWORK --- ## NETWORK_CAN_SESSION_END  // 0x4EEBC3694E49C572 0xE1FCCDBA BOOL NETWORK_CAN_SESSION_END();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0xE1FCCDBA
+* Build: 323
+

@@ -1,0 +1,11 @@
+# _IS_CINEMATIC_CAM_SHAKING
+
+--- ns: CAM --- ## IS_CINEMATIC_CAM_SHAKING  // 0xBBC08F6B4CB8FF0A 0x8376D939 BOOL IS_CINEMATIC_CAM_SHAKING();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x8376D939
+* Build: 323
+

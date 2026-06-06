@@ -1,0 +1,11 @@
+# _GET_CURRENT_WEBPAGE_ID
+
+--- ns: HUD aliases: ["0x01A358D9128B7A86","_GET_ACTIVE_WEBSITE_ID"] --- ## GET_CURRENT_WEBPAGE_ID  // 0x01A358D9128B7A86 0xAB5B7C18 int GET_CURRENT_WEBPAGE_ID();  ## Return value
+
+### Return Value
+* int
+
+### Notes
+* AP Hash: 0x0xAB5B7C18
+* Build: 323
+

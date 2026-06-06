@@ -1,0 +1,14 @@
+# _ASSISTED_MOVEMENT_OVERRIDE_LOAD_DISTANCE_THIS_FRAME
+
+--- ns: TASK --- ## ASSISTED_MOVEMENT_OVERRIDE_LOAD_DISTANCE_THIS_FRAME  // 0x13945951E16EF912 0x8FB923EC void ASSISTED_MOVEMENT_OVERRIDE_LOAD_DISTANCE_THIS_FRAME(float dist);   ## Parameters * **dist**:
+
+### Parameters
+* float dist
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x8FB923EC
+* Build: 323
+

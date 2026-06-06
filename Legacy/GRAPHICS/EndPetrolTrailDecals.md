@@ -1,0 +1,11 @@
+# _END_PETROL_TRAIL_DECALS
+
+--- ns: GRAPHICS aliases: ["0x0A123435A26C36CD"] --- ## END_PETROL_TRAIL_DECALS  // 0x0A123435A26C36CD 0xCCCA6855 void END_PETROL_TRAIL_DECALS();
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0xCCCA6855
+* Build: 323
+

@@ -1,0 +1,11 @@
+# _NETWORK_IS_IN_TRANSITION
+
+--- ns: NETWORK --- ## NETWORK_IS_IN_TRANSITION  // 0x68049AEFF83D8F0A 0xC3CDB626 BOOL NETWORK_IS_IN_TRANSITION();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0xC3CDB626
+* Build: 323
+

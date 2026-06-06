@@ -1,0 +1,11 @@
+# _GET_MAX_NUM_NETWORK_PICKUPS
+
+--- ns: NETWORK aliases: ["0xA72835064DD63E4C"] --- ## GET_MAX_NUM_NETWORK_PICKUPS  // 0xA72835064DD63E4C 0x6A036061 int GET_MAX_NUM_NETWORK_PICKUPS();  ## Return value
+
+### Return Value
+* int
+
+### Notes
+* AP Hash: 0x0x6A036061
+* Build: 323
+

@@ -1,0 +1,11 @@
+# _UGC_HAS_CREATE_FINISHED
+
+--- ns: NETWORK aliases: ["0x5E24341A7F92A74B"] --- ## UGC_HAS_CREATE_FINISHED  // 0x5E24341A7F92A74B 0xE69E8D0D cs_type(Any) BOOL UGC_HAS_CREATE_FINISHED();  ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0xE69E8D0D
+* Build: 323
+

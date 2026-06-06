@@ -1,0 +1,11 @@
+# _NETWORK_CAN_SHARE_JOB_CASH
+
+--- ns: MONEY aliases: ["0x1C2473301B1C66BA"] --- ## NETWORK_CAN_SHARE_JOB_CASH  // 0x1C2473301B1C66BA 0xA27B9FE8 BOOL NETWORK_CAN_SHARE_JOB_CASH();  ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0xA27B9FE8
+* Build: 323
+

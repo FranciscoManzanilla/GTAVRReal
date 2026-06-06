@@ -1,0 +1,19 @@
+# _NETWORK_GET_ENTITY_FROM_OBJECT_ID
+
+No description available.
+
+### Parameters
+* Any p0
+
+### Return Value
+* Entity
+
+### Notes
+* Build: 505
+* I've had this return the player's ped handle sometimes, but also other random entities.
+Whatever p0 is, it's at least not synced to other players.
+At least not all the time, some p0 values actually output the same entity, (different handle of course, but same entity).
+But another p0 value may return an entity for player x, but not for player y (it'll just return -1 even if the entity exists on both clients).
+
+Returns an entity handle or -1, value changes based on p0's value.
+

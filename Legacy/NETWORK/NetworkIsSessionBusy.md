@@ -1,0 +1,11 @@
+# _NETWORK_IS_SESSION_BUSY
+
+--- ns: NETWORK --- ## NETWORK_IS_SESSION_BUSY  // 0xF4435D66A8E2905E 0x8592152D BOOL NETWORK_IS_SESSION_BUSY();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x8592152D
+* Build: 323
+

@@ -1,0 +1,11 @@
+# _GET_AUDIBLE_MUSIC_TRACK_TEXT_ID
+
+--- ns: AUDIO --- ## GET_AUDIBLE_MUSIC_TRACK_TEXT_ID  // 0x50B196FC9ED6545B 0xA2B88CA7 int GET_AUDIBLE_MUSIC_TRACK_TEXT_ID();   ## Return value
+
+### Return Value
+* int
+
+### Notes
+* AP Hash: 0x0xA2B88CA7
+* Build: 323
+

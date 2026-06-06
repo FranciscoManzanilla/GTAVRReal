@@ -1,0 +1,11 @@
+# _IS_MESSAGE_BEING_DISPLAYED
+
+--- ns: HUD --- ## IS_MESSAGE_BEING_DISPLAYED  // 0x7984C03AA5CC2F41 0x6A77FE8D BOOL IS_MESSAGE_BEING_DISPLAYED();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x6A77FE8D
+* Build: 323
+

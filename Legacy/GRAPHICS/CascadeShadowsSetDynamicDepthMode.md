@@ -1,0 +1,14 @@
+# _CASCADE_SHADOWS_SET_DYNAMIC_DEPTH_MODE
+
+--- ns: GRAPHICS aliases: ["0xD39D13C9FEBF0511"] --- ## CASCADE_SHADOWS_SET_DYNAMIC_DEPTH_MODE  // 0xD39D13C9FEBF0511 0x4A124267 void CASCADE_SHADOWS_SET_DYNAMIC_DEPTH_MODE(BOOL p0);  ## Parameters * **p0**:
+
+### Parameters
+* BOOL p0
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x4A124267
+* Build: 323
+

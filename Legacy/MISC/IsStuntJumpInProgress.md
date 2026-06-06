@@ -1,0 +1,11 @@
+# _IS_STUNT_JUMP_IN_PROGRESS
+
+--- ns: MISC --- ## IS_STUNT_JUMP_IN_PROGRESS  // 0x7A3F19700A4D0525 0xF477D0B1 BOOL IS_STUNT_JUMP_IN_PROGRESS();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0xF477D0B1
+* Build: 323
+

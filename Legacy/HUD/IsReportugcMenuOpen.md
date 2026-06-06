@@ -1,0 +1,11 @@
+# _IS_REPORTUGC_MENU_OPEN
+
+--- ns: HUD aliases: ["0x9135584D09A3437E"] --- ## IS_REPORTUGC_MENU_OPEN  // 0x9135584D09A3437E 0x9D2C94FA BOOL IS_REPORTUGC_MENU_OPEN();  ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x9D2C94FA
+* Build: 323
+

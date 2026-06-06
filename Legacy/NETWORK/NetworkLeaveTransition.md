@@ -1,0 +1,11 @@
+# _NETWORK_LEAVE_TRANSITION
+
+--- ns: NETWORK --- ## NETWORK_LEAVE_TRANSITION  // 0xD23A1A815D21DB19 0x3A3599B7 cs_type(Any) BOOL NETWORK_LEAVE_TRANSITION();  ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x3A3599B7
+* Build: 323
+

@@ -1,0 +1,11 @@
+# _NETWORK_HAS_HEADSET
+
+--- ns: NETWORK --- ## NETWORK_HAS_HEADSET  // 0xE870F9F1F7B4F1FA 0xA7DC5657 BOOL NETWORK_HAS_HEADSET();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0xA7DC5657
+* Build: 323
+

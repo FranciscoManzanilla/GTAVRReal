@@ -1,0 +1,11 @@
+# _UGC_CLEAR_CREATE_RESULT
+
+--- ns: NETWORK aliases: ["0x17440AA15D1D3739"] --- ## UGC_CLEAR_CREATE_RESULT  // 0x17440AA15D1D3739 0x133FF2D5 void UGC_CLEAR_CREATE_RESULT();
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x133FF2D5
+* Build: 323
+

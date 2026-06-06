@@ -1,0 +1,11 @@
+# _UI3DSCENE_IS_AVAILABLE
+
+--- ns: GRAPHICS aliases: ["0xD3A10FC7FD8D98CD"] --- ## UI3DSCENE_IS_AVAILABLE  // 0xD3A10FC7FD8D98CD 0xE40A0F1A BOOL UI3DSCENE_IS_AVAILABLE();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0xE40A0F1A
+* Build: 323
+

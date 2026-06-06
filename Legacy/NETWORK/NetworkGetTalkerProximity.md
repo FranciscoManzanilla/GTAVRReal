@@ -1,0 +1,11 @@
+# _NETWORK_GET_TALKER_PROXIMITY
+
+--- ns: NETWORK --- ## NETWORK_GET_TALKER_PROXIMITY  // 0x84F0F13120B4E098 0x19991ADD float NETWORK_GET_TALKER_PROXIMITY();   ## Return value
+
+### Return Value
+* float
+
+### Notes
+* AP Hash: 0x0x19991ADD
+* Build: 323
+

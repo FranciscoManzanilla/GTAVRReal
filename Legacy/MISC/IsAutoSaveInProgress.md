@@ -1,0 +1,11 @@
+# _IS_AUTO_SAVE_IN_PROGRESS
+
+--- ns: MISC --- ## IS_AUTO_SAVE_IN_PROGRESS  // 0x69240733738C19A0 0x36F75399 BOOL IS_AUTO_SAVE_IN_PROGRESS();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x36F75399
+* Build: 323
+

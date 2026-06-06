@@ -1,0 +1,11 @@
+# _HAS_CUTSCENE_LOADED
+
+--- ns: CUTSCENE --- ## HAS_CUTSCENE_LOADED  // 0xC59F528E9AB9F339 0xF9998582 BOOL HAS_CUTSCENE_LOADED();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0xF9998582
+* Build: 323
+

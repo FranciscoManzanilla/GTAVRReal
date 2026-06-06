@@ -1,0 +1,11 @@
+# _HIDE_HELP_TEXT_THIS_FRAME
+
+--- ns: HUD --- ## HIDE_HELP_TEXT_THIS_FRAME  // 0xD46923FC481CA285 0xF3807BED void HIDE_HELP_TEXT_THIS_FRAME();
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0xF3807BED
+* Build: 323
+

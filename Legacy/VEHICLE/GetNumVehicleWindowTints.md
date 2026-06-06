@@ -1,0 +1,11 @@
+# _GET_NUM_VEHICLE_WINDOW_TINTS
+
+--- ns: VEHICLE --- ## GET_NUM_VEHICLE_WINDOW_TINTS  // 0x9D1224004B3A6707 0x625C7B66 int GET_NUM_VEHICLE_WINDOW_TINTS();   ## Return value
+
+### Return Value
+* int
+
+### Notes
+* AP Hash: 0x0x625C7B66
+* Build: 323
+

@@ -1,0 +1,11 @@
+# _ROPE_ARE_TEXTURES_LOADED
+
+--- ns: PHYSICS --- ## ROPE_ARE_TEXTURES_LOADED  // 0xF2D0E6A75CC05597 0x5FDC1047 BOOL ROPE_ARE_TEXTURES_LOADED();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x5FDC1047
+* Build: 323
+

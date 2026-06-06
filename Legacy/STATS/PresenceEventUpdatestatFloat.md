@@ -1,0 +1,16 @@
+# _PRESENCE_EVENT_UPDATESTAT_FLOAT
+
+--- ns: STATS aliases: ["0x30A6614C1F7799B8", "_UPDATE_STAT_FLOAT"] --- ## PRESENCE_EVENT_UPDATESTAT_FLOAT  // 0x30A6614C1F7799B8 0x3E69E7C3 void PRESENCE_EVENT_UPDATESTAT_FLOAT(cs_type(Any) Hash statHash, float value, int p2);  ## Parameters * **statHash**: * **value**: * **p2**:
+
+### Parameters
+* Hash statHash
+* float value
+* int p2
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x3E69E7C3
+* Build: 323
+

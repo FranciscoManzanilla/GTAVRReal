@@ -1,0 +1,14 @@
+# _NETWORK_GET_PRESENCE_INVITE_FROM_ADMIN
+
+--- ns: NETWORK aliases: ["0x3DBF2DF0AEB7D289"] --- ## NETWORK_GET_PRESENCE_INVITE_FROM_ADMIN  // 0x3DBF2DF0AEB7D289 0xF5E3401C BOOL NETWORK_GET_PRESENCE_INVITE_FROM_ADMIN(Any p0);   ## Parameters * **p0**:  ## Return value
+
+### Parameters
+* int p0
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0xF5E3401C
+* Build: 323
+

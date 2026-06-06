@@ -1,0 +1,11 @@
+# _CLEAR_PED_IN_PAUSE_MENU
+
+--- ns: HUD --- ## CLEAR_PED_IN_PAUSE_MENU  // 0x5E62BE5DC58E9E06 0x28058ACF void CLEAR_PED_IN_PAUSE_MENU();
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x28058ACF
+* Build: 323
+

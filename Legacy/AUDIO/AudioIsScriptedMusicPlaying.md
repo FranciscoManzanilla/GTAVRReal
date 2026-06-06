@@ -1,0 +1,11 @@
+# _AUDIO_IS_SCRIPTED_MUSIC_PLAYING
+
+--- ns: AUDIO aliases: ["0x3D120012440E6683"] --- ## AUDIO_IS_SCRIPTED_MUSIC_PLAYING  // 0x845FFC3A4FEEFA3E 0x86E995D1 cs_type(Any) BOOL AUDIO_IS_SCRIPTED_MUSIC_PLAYING();  ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* Build: 463
+* This is an alias of AUDIO_IS_MUSIC_PLAYING.
+

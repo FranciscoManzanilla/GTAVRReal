@@ -1,0 +1,14 @@
+# _ON_ENTER_MP
+
+--- ns: DLC aliases: ["_LOAD_MP_DLC_MAPS"] --- ## ON_ENTER_MP  // 0x0888C3502DBBEEF5 0xC65586A9 void ON_ENTER_MP();  This loads the GTA:O dlc map parts (high end garages, apartments). Works in singleplayer. In order to use GTA:O heist IPL's you have to call this native with the following params: SET_INSTANCE_PRIORITY_MODE(1);
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0xC65586A9
+* Build: 323
+* This loads the GTA:O dlc map parts (high end garages, apartments).
+Works in singleplayer.
+In order to use GTA:O heist IPL's you have to call this native with the following params: SET_INSTANCE_PRIORITY_MODE(1);
+

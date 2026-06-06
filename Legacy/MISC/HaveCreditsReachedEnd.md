@@ -1,0 +1,11 @@
+# _HAVE_CREDITS_REACHED_END
+
+--- ns: MISC aliases: ["0x075F1D57402C93BA"] --- ## HAVE_CREDITS_REACHED_END  // 0x075F1D57402C93BA 0x2569C9A7 BOOL HAVE_CREDITS_REACHED_END();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x2569C9A7
+* Build: 323
+

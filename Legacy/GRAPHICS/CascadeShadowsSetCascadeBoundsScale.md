@@ -1,0 +1,14 @@
+# _CASCADE_SHADOWS_SET_CASCADE_BOUNDS_SCALE
+
+--- ns: GRAPHICS aliases: ["0x5F0F3F56635809EF"] --- ## CASCADE_SHADOWS_SET_CASCADE_BOUNDS_SCALE  // 0x5F0F3F56635809EF 0x13D4ABC0 void CASCADE_SHADOWS_SET_CASCADE_BOUNDS_SCALE(float p0);  ## Parameters * **p0**:
+
+### Parameters
+* float p0
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x13D4ABC0
+* Build: 323
+

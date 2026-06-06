@@ -1,0 +1,11 @@
+# _SHUTDOWN_LOADING_SCREEN
+
+--- ns: SCRIPT --- ## SHUTDOWN_LOADING_SCREEN  // 0x078EBE9809CCD637 0xA2826D17 void SHUTDOWN_LOADING_SCREEN();
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0xA2826D17
+* Build: 323
+

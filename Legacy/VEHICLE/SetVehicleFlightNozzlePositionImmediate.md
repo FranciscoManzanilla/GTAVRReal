@@ -1,0 +1,15 @@
+# _SET_VEHICLE_FLIGHT_NOZZLE_POSITION_IMMEDIATE
+
+--- ns: VEHICLE aliases: ["0x9AA47FFF660CB932","_SET_VERTICAL_FLIGHT_PHASE","_SET_PLANE_VTOL_DIRECTION"] --- ## SET_VEHICLE_FLIGHT_NOZZLE_POSITION_IMMEDIATE  // 0x9AA47FFF660CB932 0xDD7936F5 void SET_VEHICLE_FLIGHT_NOZZLE_POSITION_IMMEDIATE(Vehicle vehicle, float angle);  ## Parameters * **vehicle**: * **angle**:
+
+### Parameters
+* Vehicle vehicle
+* float angle
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0xDD7936F5
+* Build: 323
+

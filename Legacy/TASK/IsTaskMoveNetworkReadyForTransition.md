@@ -1,0 +1,14 @@
+# _IS_TASK_MOVE_NETWORK_READY_FOR_TRANSITION
+
+--- ns: TASK aliases: ["0x30ED88D5E0C56A37"] --- ## IS_TASK_MOVE_NETWORK_READY_FOR_TRANSITION  // 0x30ED88D5E0C56A37 0x92FDBAE6 BOOL IS_TASK_MOVE_NETWORK_READY_FOR_TRANSITION(Ped ped);   ## Parameters * **ped**:  ## Return value
+
+### Parameters
+* Ped ped
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x92FDBAE6
+* Build: 323
+

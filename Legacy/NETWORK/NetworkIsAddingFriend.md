@@ -1,0 +1,11 @@
+# _NETWORK_IS_ADDING_FRIEND
+
+--- ns: NETWORK --- ## NETWORK_IS_ADDING_FRIEND  // 0x6EA101606F6E4D81 0xBB7EC8C4 cs_type(BOOL) Any NETWORK_IS_ADDING_FRIEND();  ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0xBB7EC8C4
+* Build: 323
+

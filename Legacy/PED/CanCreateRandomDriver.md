@@ -1,0 +1,11 @@
+# _CAN_CREATE_RANDOM_DRIVER
+
+--- ns: PED --- ## CAN_CREATE_RANDOM_DRIVER  // 0xB8EB95E5B4E56978 0x99861609 BOOL CAN_CREATE_RANDOM_DRIVER();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x99861609
+* Build: 323
+

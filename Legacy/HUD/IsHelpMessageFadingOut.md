@@ -1,0 +1,11 @@
+# _IS_HELP_MESSAGE_FADING_OUT
+
+--- ns: HUD --- ## IS_HELP_MESSAGE_FADING_OUT  // 0x327EDEEEAC55C369 0x3E50AE92 BOOL IS_HELP_MESSAGE_FADING_OUT();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x3E50AE92
+* Build: 323
+

@@ -1,0 +1,11 @@
+# _GET_NO_LOADING_SCREEN
+
+--- ns: SCRIPT aliases: ["_GET_NO_LOADING_SCREEN"] --- ## GET_NO_LOADING_SCREEN  // 0x18C1270EA7F199BC 0x27512BA0 BOOL GET_NO_LOADING_SCREEN();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x27512BA0
+* Build: 323
+

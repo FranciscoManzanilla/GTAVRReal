@@ -1,0 +1,11 @@
+# _UGC_CLEAR_QUERY_RESULTS
+
+--- ns: NETWORK aliases: ["0xBA96394A0EECFA65"] --- ## UGC_CLEAR_QUERY_RESULTS  // 0xBA96394A0EECFA65 0x0D35DD93 void UGC_CLEAR_QUERY_RESULTS();
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x0D35DD93
+* Build: 323
+

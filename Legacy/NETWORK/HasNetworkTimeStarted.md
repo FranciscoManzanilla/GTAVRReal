@@ -1,0 +1,11 @@
+# _HAS_NETWORK_TIME_STARTED
+
+--- ns: NETWORK aliases: ["0x46718ACEEDEAFC84"] --- ## HAS_NETWORK_TIME_STARTED  // 0x46718ACEEDEAFC84 0x4538C4A2 BOOL HAS_NETWORK_TIME_STARTED();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x4538C4A2
+* Build: 323
+

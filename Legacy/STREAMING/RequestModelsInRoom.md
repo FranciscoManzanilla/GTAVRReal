@@ -1,0 +1,21 @@
+# _REQUEST_MODELS_IN_ROOM
+
+--- ns: STREAMING aliases: ["0x8A7A40100EDFEC58","_REQUEST_INTERIOR_ROOM_BY_NAME"] --- ## REQUEST_MODELS_IN_ROOM  // 0x8A7A40100EDFEC58 0x939243FB void REQUEST_MODELS_IN_ROOM(int interior, char* roomName);  STREAMING::REQUEST_MODELS_IN_ROOM(l_13BC, "V_FIB01_cur_elev"); STREAMING::REQUEST_MODELS_IN_ROOM(l_13BC, "limbo"); STREAMING::REQUEST_MODELS_IN_ROOM(l_13BB, "V_Office_gnd_lifts"); STREAMING::REQUEST_MODELS_IN_ROOM(l_13BB, "limbo"); STREAMING::REQUEST_MODELS_IN_ROOM(l_13BC, "v_fib01_jan_elev"); STREAMING::REQUEST_MODELS_IN_ROOM(l_13BC, "limbo");  ## Parameters * **interior**: * **roomName**:
+
+### Parameters
+* Interior interior
+* const char* roomName
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x939243FB
+* Build: 323
+* STREAMING::REQUEST_MODELS_IN_ROOM(l_13BC, "V_FIB01_cur_elev");
+STREAMING::REQUEST_MODELS_IN_ROOM(l_13BC, "limbo");
+STREAMING::REQUEST_MODELS_IN_ROOM(l_13BB, "V_Office_gnd_lifts");
+STREAMING::REQUEST_MODELS_IN_ROOM(l_13BB, "limbo");
+STREAMING::REQUEST_MODELS_IN_ROOM(l_13BC, "v_fib01_jan_elev");
+STREAMING::REQUEST_MODELS_IN_ROOM(l_13BC, "limbo");
+

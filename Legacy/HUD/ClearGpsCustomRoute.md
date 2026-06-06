@@ -1,0 +1,11 @@
+# _CLEAR_GPS_CUSTOM_ROUTE
+
+--- ns: HUD aliases: ["0xE6DE0561D9232A64"] --- ## CLEAR_GPS_CUSTOM_ROUTE  // 0xE6DE0561D9232A64 0xCF2E3E24 void CLEAR_GPS_CUSTOM_ROUTE();
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0xCF2E3E24
+* Build: 323
+

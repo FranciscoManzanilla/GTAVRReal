@@ -1,0 +1,11 @@
+# _SET_MINIMAP_GOLF_COURSE_OFF
+
+--- ns: HUD aliases: ["0x35EDD5B2E3FF01C0"] --- ## SET_MINIMAP_GOLF_COURSE_OFF  // 0x35EDD5B2E3FF01C0 0x20FD3E87 void SET_MINIMAP_GOLF_COURSE_OFF();
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x20FD3E87
+* Build: 323
+

@@ -1,0 +1,14 @@
+# _NETWORK_GET_PRESENCE_INVITE_PLAYLIST_CURRENT
+
+--- ns: NETWORK aliases: ["0x728C4CC7920CD102"] --- ## NETWORK_GET_PRESENCE_INVITE_PLAYLIST_CURRENT  // 0x728C4CC7920CD102 0x4677C656 Any NETWORK_GET_PRESENCE_INVITE_PLAYLIST_CURRENT(Any p0);   ## Parameters * **p0**:  ## Return value
+
+### Parameters
+* int p0
+
+### Return Value
+* int
+
+### Notes
+* AP Hash: 0x0x4677C656
+* Build: 323
+

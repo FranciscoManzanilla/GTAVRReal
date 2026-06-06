@@ -1,0 +1,13 @@
+# _NETWORK_SET_CURRENT_DATA_MANAGER_HANDLE
+
+--- ns: NETWORK aliases: ["0x796A87B3B68D1F3D","_NETWORK_CHECK_DATA_MANAGER_FOR_HANDLE"] --- ## _NETWORK_SET_CURRENT_DATA_MANAGER_HANDLE  // 0x796A87B3B68D1F3D BOOL _NETWORK_SET_CURRENT_DATA_MANAGER_HANDLE(Any* p0);   ## Parameters * **p0**:  ## Return value
+
+### Parameters
+* Any* p0
+
+### Return Value
+* BOOL
+
+### Notes
+* Build: 323
+

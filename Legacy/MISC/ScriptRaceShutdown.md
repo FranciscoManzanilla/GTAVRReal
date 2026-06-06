@@ -1,0 +1,11 @@
+# _SCRIPT_RACE_SHUTDOWN
+
+--- ns: MISC aliases: ["0x1FF6BF9A63E5757F"] --- ## SCRIPT_RACE_SHUTDOWN  // 0x1FF6BF9A63E5757F 0xDF99925C void SCRIPT_RACE_SHUTDOWN();
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0xDF99925C
+* Build: 323
+

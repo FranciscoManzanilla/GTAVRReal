@@ -1,0 +1,11 @@
+# _GET_REPLAY_STAT_MISSION_TYPE
+
+--- ns: MISC aliases: ["0x2B626A0150E4D449"] --- ## GET_REPLAY_STAT_MISSION_TYPE  // 0x2B626A0150E4D449 0x710E5D1E int GET_REPLAY_STAT_MISSION_TYPE();   ## Return value
+
+### Return Value
+* int
+
+### Notes
+* AP Hash: 0x0x710E5D1E
+* Build: 323
+

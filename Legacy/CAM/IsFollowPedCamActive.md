@@ -1,0 +1,11 @@
+# _IS_FOLLOW_PED_CAM_ACTIVE
+
+--- ns: CAM --- ## IS_FOLLOW_PED_CAM_ACTIVE  // 0xC6D3D26810C8E0F9 0x9F9E856C BOOL IS_FOLLOW_PED_CAM_ACTIVE();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x9F9E856C
+* Build: 323
+

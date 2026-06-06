@@ -1,0 +1,11 @@
+# _DISABLE_CINEMATIC_BONNET_CAMERA_THIS_UPDATE
+
+--- ns: CAM aliases: ["_DISABLE_VEHICLE_FIRST_PERSON_CAM_THIS_FRAME"] --- ## DISABLE_CINEMATIC_BONNET_CAMERA_THIS_UPDATE  // 0xADFF1B2A555F5FBA 0x5AC6DAC9 void DISABLE_CINEMATIC_BONNET_CAMERA_THIS_UPDATE();  Disables first person camera while in a vehicle for the current tick.
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x5AC6DAC9
+* Build: 323
+

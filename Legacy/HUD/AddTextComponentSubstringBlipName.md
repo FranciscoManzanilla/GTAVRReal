@@ -1,0 +1,14 @@
+# _ADD_TEXT_COMPONENT_SUBSTRING_BLIP_NAME
+
+--- ns: HUD aliases: ["0x80EAD8E2E1D5D52E"] --- ## ADD_TEXT_COMPONENT_SUBSTRING_BLIP_NAME  // 0x80EAD8E2E1D5D52E 0x5DE98F0A void ADD_TEXT_COMPONENT_SUBSTRING_BLIP_NAME(Blip blip);   ## Parameters * **blip**:
+
+### Parameters
+* Blip blip
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x5DE98F0A
+* Build: 323
+

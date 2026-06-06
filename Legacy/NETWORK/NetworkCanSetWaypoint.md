@@ -1,0 +1,11 @@
+# _NETWORK_CAN_SET_WAYPOINT
+
+--- ns: NETWORK --- ## NETWORK_CAN_SET_WAYPOINT  // 0xC927EC229934AF60 0x009E68F3 BOOL NETWORK_CAN_SET_WAYPOINT();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x009E68F3
+* Build: 323
+

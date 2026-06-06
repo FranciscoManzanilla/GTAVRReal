@@ -1,0 +1,11 @@
+# _NETWORK_SESSION_IS_SOLO
+
+--- ns: NETWORK aliases: ["0xF3929C2379B60CCE"] --- ## NETWORK_SESSION_IS_SOLO  // 0xF3929C2379B60CCE 0x3D2C1916 BOOL NETWORK_SESSION_IS_SOLO();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x3D2C1916
+* Build: 323
+

@@ -1,0 +1,10 @@
+# _SEETHROUGH_GET_MAX_THICKNESS
+
+--- ns: GRAPHICS --- ## _SEETHROUGH_GET_MAX_THICKNESS  // 0x43DBAE39626CE83F float _SEETHROUGH_GET_MAX_THICKNESS();  NativeDB Introduced: v1290
+
+### Return Value
+* float
+
+### Notes
+* Build: 1290
+

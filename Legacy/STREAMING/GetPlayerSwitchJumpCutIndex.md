@@ -1,0 +1,11 @@
+# _GET_PLAYER_SWITCH_JUMP_CUT_INDEX
+
+--- ns: STREAMING aliases: ["0x78C0D93253149435"] --- ## GET_PLAYER_SWITCH_JUMP_CUT_INDEX  // 0x78C0D93253149435 0x02BA7AC2 int GET_PLAYER_SWITCH_JUMP_CUT_INDEX();  ## Return value
+
+### Return Value
+* int
+
+### Notes
+* AP Hash: 0x0x02BA7AC2
+* Build: 323
+

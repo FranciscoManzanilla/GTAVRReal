@@ -1,0 +1,22 @@
+# _CLEAR_AREA
+
+--- ns: MISC --- ## CLEAR_AREA  // 0xA56F01F3765B93A0 0x854E9AB8 void CLEAR_AREA(float X, float Y, float Z, float radius, BOOL p4, BOOL ignoreCopCars, BOOL ignoreObjects, BOOL p7);  Example: CLEAR_AREA(0, 0, 0, 30, true, false, false, false);  ## Parameters * **X**: * **Y**: * **Z**: * **radius**: * **p4**: * **ignoreCopCars**: * **ignoreObjects**: * **p7**:
+
+### Parameters
+* float X
+* float Y
+* float Z
+* float radius
+* BOOL p4
+* BOOL ignoreCopCars
+* BOOL ignoreObjects
+* BOOL p7
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x854E9AB8
+* Build: 323
+* Example: CLEAR_AREA(0, 0, 0, 30, true, false, false, false);
+

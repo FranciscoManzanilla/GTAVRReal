@@ -1,0 +1,11 @@
+# _NETWORK_GET_NUM_FOUND_GAMERS
+
+--- ns: NETWORK --- ## NETWORK_GET_NUM_FOUND_GAMERS  // 0xA1B043EE79A916FB 0xF4B80C7E int NETWORK_GET_NUM_FOUND_GAMERS();   ## Return value
+
+### Return Value
+* int
+
+### Notes
+* AP Hash: 0x0xF4B80C7E
+* Build: 323
+

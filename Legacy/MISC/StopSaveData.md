@@ -1,0 +1,11 @@
+# _STOP_SAVE_DATA
+
+--- ns: MISC --- ## STOP_SAVE_DATA  // 0x74E20C9145FB66FD 0x3B1C07C8 void STOP_SAVE_DATA();
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x3B1C07C8
+* Build: 323
+

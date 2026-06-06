@@ -1,0 +1,11 @@
+# _GET_IS_LOADING_SCREEN_ACTIVE
+
+--- ns: DLC --- ## GET_IS_LOADING_SCREEN_ACTIVE  // 0x10D0A8F259E93EC9 0x517B601B BOOL GET_IS_LOADING_SCREEN_ACTIVE();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x517B601B
+* Build: 323
+

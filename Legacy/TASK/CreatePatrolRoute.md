@@ -1,0 +1,11 @@
+# _CREATE_PATROL_ROUTE
+
+--- ns: TASK --- ## CREATE_PATROL_ROUTE  // 0xAF8A443CCC8018DC 0x0A6C7864 void CREATE_PATROL_ROUTE();
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x0A6C7864
+* Build: 323
+

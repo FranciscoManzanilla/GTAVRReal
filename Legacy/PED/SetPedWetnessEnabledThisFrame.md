@@ -1,0 +1,15 @@
+# _SET_PED_WETNESS_ENABLED_THIS_FRAME
+
+--- ns: PED --- ## SET_PED_WETNESS_ENABLED_THIS_FRAME  // 0xB5485E4907B53019 0xBDE749F7 void SET_PED_WETNESS_ENABLED_THIS_FRAME(Ped ped);  combined with PED::SET_PED_WETNESS_HEIGHT(), this native makes the ped drenched in water up to the height specified in the other function  ## Parameters * **ped**:
+
+### Parameters
+* Ped ped
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0xBDE749F7
+* Build: 323
+* combined with PED::SET_PED_WETNESS_HEIGHT(), this native makes the ped drenched in water up to the height specified in the other function
+

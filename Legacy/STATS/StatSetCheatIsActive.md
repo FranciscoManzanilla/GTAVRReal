@@ -1,0 +1,11 @@
+# _STAT_SET_CHEAT_IS_ACTIVE
+
+--- ns: STATS aliases: ["0x047CBED6F6F8B63C"] --- ## STAT_SET_CHEAT_IS_ACTIVE  // 0x047CBED6F6F8B63C 0xA063CABD void STAT_SET_CHEAT_IS_ACTIVE();
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0xA063CABD
+* Build: 323
+

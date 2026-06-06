@@ -1,0 +1,15 @@
+# _NETWORK_SET_TRANSITION_VISIBILITY_LOCK
+
+--- ns: NETWORK aliases: ["0x0C978FDA19692C2C"] --- ## NETWORK_SET_TRANSITION_VISIBILITY_LOCK  // 0x0C978FDA19692C2C 0x4AF0ADF5 void NETWORK_SET_TRANSITION_VISIBILITY_LOCK(BOOL p0, BOOL p1);  ## Parameters * **p0**: * **p1**:
+
+### Parameters
+* BOOL p0
+* BOOL p1
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x4AF0ADF5
+* Build: 323
+

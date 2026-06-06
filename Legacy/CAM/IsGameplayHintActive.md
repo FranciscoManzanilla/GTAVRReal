@@ -1,0 +1,11 @@
+# _IS_GAMEPLAY_HINT_ACTIVE
+
+--- ns: CAM --- ## IS_GAMEPLAY_HINT_ACTIVE  // 0xE520FF1AD2785B40 0xAD8DA205 BOOL IS_GAMEPLAY_HINT_ACTIVE();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0xAD8DA205
+* Build: 323
+

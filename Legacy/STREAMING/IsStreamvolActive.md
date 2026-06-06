@@ -1,0 +1,11 @@
+# _IS_STREAMVOL_ACTIVE
+
+--- ns: STREAMING aliases: ["0xBC9823AB80A3DCAC"] --- ## IS_STREAMVOL_ACTIVE  // 0xBC9823AB80A3DCAC 0x56253356 BOOL IS_STREAMVOL_ACTIVE();  ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x56253356
+* Build: 323
+

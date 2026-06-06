@@ -1,0 +1,11 @@
+# _IS_HELP_MESSAGE_ON_SCREEN
+
+--- ns: HUD --- ## IS_HELP_MESSAGE_ON_SCREEN  // 0xDAD37F45428801AE 0x4B3C9CA9 BOOL IS_HELP_MESSAGE_ON_SCREEN();  ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x4B3C9CA9
+* Build: 323
+

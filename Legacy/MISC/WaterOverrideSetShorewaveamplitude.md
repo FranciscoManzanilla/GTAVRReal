@@ -1,0 +1,14 @@
+# _WATER_OVERRIDE_SET_SHOREWAVEAMPLITUDE
+
+--- ns: MISC aliases: ["0xB8F87EAD7533B176"] --- ## WATER_OVERRIDE_SET_SHOREWAVEAMPLITUDE  // 0xB8F87EAD7533B176 0x625181DC void WATER_OVERRIDE_SET_SHOREWAVEAMPLITUDE(float amplitude);   ## Parameters * **amplitude**:
+
+### Parameters
+* float amplitude
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x625181DC
+* Build: 323
+

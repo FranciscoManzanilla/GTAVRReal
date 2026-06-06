@@ -1,0 +1,11 @@
+# _IS_CUTSCENE_PLAYING
+
+--- ns: CUTSCENE --- ## IS_CUTSCENE_PLAYING  // 0xD3C2E180A40F031E 0xA3A78392 BOOL IS_CUTSCENE_PLAYING();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0xA3A78392
+* Build: 323
+

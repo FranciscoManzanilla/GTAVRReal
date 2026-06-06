@@ -1,0 +1,11 @@
+# _IS_NAVIGATING_MENU_CONTENT
+
+--- ns: HUD aliases: ["0x4E3CD0EF8A489541"] --- ## IS_NAVIGATING_MENU_CONTENT  // 0x4E3CD0EF8A489541 0xDA7951A2 Any IS_NAVIGATING_MENU_CONTENT();  ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0xDA7951A2
+* Build: 323
+

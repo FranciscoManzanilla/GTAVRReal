@@ -1,0 +1,14 @@
+# _HAS_PLAYER_DAMAGED_AT_LEAST_ONE_NON_ANIMAL_PED
+
+--- ns: PLAYER --- ## HAS_PLAYER_DAMAGED_AT_LEAST_ONE_NON_ANIMAL_PED  // 0xE4B90F367BD81752 0xA3707DFC BOOL HAS_PLAYER_DAMAGED_AT_LEAST_ONE_NON_ANIMAL_PED(Player player);   ## Parameters * **player**:  ## Return value
+
+### Parameters
+* Player player
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0xA3707DFC
+* Build: 323
+

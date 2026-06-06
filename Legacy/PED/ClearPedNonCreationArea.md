@@ -1,0 +1,11 @@
+# _CLEAR_PED_NON_CREATION_AREA
+
+--- ns: PED --- ## CLEAR_PED_NON_CREATION_AREA  // 0x2E05208086BA0651 0x6F7043A3 void CLEAR_PED_NON_CREATION_AREA();
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x6F7043A3
+* Build: 323
+

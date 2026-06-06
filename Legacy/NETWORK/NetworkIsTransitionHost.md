@@ -1,0 +1,11 @@
+# _NETWORK_IS_TRANSITION_HOST
+
+--- ns: NETWORK --- ## NETWORK_IS_TRANSITION_HOST  // 0x0B824797C9BF2159 0x0C0900BC cs_type(Any) BOOL NETWORK_IS_TRANSITION_HOST();  ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x0C0900BC
+* Build: 323
+

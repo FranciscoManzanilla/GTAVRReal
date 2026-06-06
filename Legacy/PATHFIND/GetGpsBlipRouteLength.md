@@ -1,0 +1,11 @@
+# _GET_GPS_BLIP_ROUTE_LENGTH
+
+--- ns: PATHFIND aliases: ["0xBBB45C3CF5C8AA85"] --- ## GET_GPS_BLIP_ROUTE_LENGTH  // 0xBBB45C3CF5C8AA85 0x4B770634 int GET_GPS_BLIP_ROUTE_LENGTH();  ## Return value
+
+### Return Value
+* int
+
+### Notes
+* AP Hash: 0x0x4B770634
+* Build: 323
+

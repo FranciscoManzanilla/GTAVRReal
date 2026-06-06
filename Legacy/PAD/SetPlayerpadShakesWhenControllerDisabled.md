@@ -1,0 +1,14 @@
+# _SET_PLAYERPAD_SHAKES_WHEN_CONTROLLER_DISABLED
+
+--- ns: PAD --- ## SET_PLAYERPAD_SHAKES_WHEN_CONTROLLER_DISABLED  // 0x798FDEB5B1575088 0xA86BD91F void SET_PLAYERPAD_SHAKES_WHEN_CONTROLLER_DISABLED(BOOL toggle);   ## Parameters * **toggle**:
+
+### Parameters
+* BOOL toggle
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0xA86BD91F
+* Build: 323
+

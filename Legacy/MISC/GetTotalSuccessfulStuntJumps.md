@@ -1,0 +1,11 @@
+# _GET_TOTAL_SUCCESSFUL_STUNT_JUMPS
+
+--- ns: MISC aliases: ["0x6856EC3D35C81EA4"] --- ## GET_TOTAL_SUCCESSFUL_STUNT_JUMPS  // 0x6856EC3D35C81EA4 0x495BE324 int GET_TOTAL_SUCCESSFUL_STUNT_JUMPS();   ## Return value
+
+### Return Value
+* int
+
+### Notes
+* AP Hash: 0x0x495BE324
+* Build: 323
+

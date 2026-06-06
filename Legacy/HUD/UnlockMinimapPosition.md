@@ -1,0 +1,11 @@
+# _UNLOCK_MINIMAP_POSITION
+
+--- ns: HUD --- ## UNLOCK_MINIMAP_POSITION  // 0x3E93E06DB8EF1F30 0x5E8E6F54 void UNLOCK_MINIMAP_POSITION();
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x5E8E6F54
+* Build: 323
+

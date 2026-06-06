@@ -1,0 +1,11 @@
+# _IS_GAMEPLAY_CAM_SHAKING
+
+--- ns: CAM --- ## IS_GAMEPLAY_CAM_SHAKING  // 0x016C090630DF1F89 0x3457D681 BOOL IS_GAMEPLAY_CAM_SHAKING();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x3457D681
+* Build: 323
+

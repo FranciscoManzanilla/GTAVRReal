@@ -1,0 +1,13 @@
+# _NET_GAMESERVER_SET_TELEMETRY_NONCE_SEED
+
+--- ns: NETSHOPPING aliases: ["0x9507D4271988E1AE","_NETWORK_SHOP_SET_TELEMETRY_NONCE_SEED"] --- ## _NET_GAMESERVER_SET_TELEMETRY_NONCE_SEED  // 0x9507D4271988E1AE BOOL _NET_GAMESERVER_SET_TELEMETRY_NONCE_SEED(int p0);   ## Parameters * **p0**:  ## Return value
+
+### Parameters
+* int p0
+
+### Return Value
+* BOOL
+
+### Notes
+* Build: 323
+

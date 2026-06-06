@@ -1,0 +1,15 @@
+# _CLEAR_PED_LAST_WEAPON_DAMAGE
+
+--- ns: WEAPON --- ## CLEAR_PED_LAST_WEAPON_DAMAGE  // 0x0E98F88A24C5F4B8 0x52C68832 void CLEAR_PED_LAST_WEAPON_DAMAGE(Ped ped);  Does NOT seem to work with HAS_PED_BEEN_DAMAGED_BY_WEAPON. Use CLEAR_ENTITY_LAST_WEAPON_DAMAGE and HAS_ENTITY_BEEN_DAMAGED_BY_WEAPON instead.  ## Parameters * **ped**:
+
+### Parameters
+* Ped ped
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x52C68832
+* Build: 323
+* Does NOT seem to work with HAS_PED_BEEN_DAMAGED_BY_WEAPON. Use CLEAR_ENTITY_LAST_WEAPON_DAMAGE and HAS_ENTITY_BEEN_DAMAGED_BY_WEAPON instead.
+

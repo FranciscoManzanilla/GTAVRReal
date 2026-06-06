@@ -1,0 +1,11 @@
+# _STAT_SAVE_PENDING_OR_REQUESTED
+
+--- ns: STATS --- ## STAT_SAVE_PENDING_OR_REQUESTED  // 0xBBB6AD006F1BBEA3 0xA3407CA3 cs_type(Any) BOOL STAT_SAVE_PENDING_OR_REQUESTED();  ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0xA3407CA3
+* Build: 323
+

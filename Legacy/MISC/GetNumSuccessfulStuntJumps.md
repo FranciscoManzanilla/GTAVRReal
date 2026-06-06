@@ -1,0 +1,11 @@
+# _GET_NUM_SUCCESSFUL_STUNT_JUMPS
+
+--- ns: MISC aliases: ["0x996DD1E1E02F1008"] --- ## GET_NUM_SUCCESSFUL_STUNT_JUMPS  // 0x996DD1E1E02F1008 0x006F9BA2 int GET_NUM_SUCCESSFUL_STUNT_JUMPS();   ## Return value
+
+### Return Value
+* int
+
+### Notes
+* AP Hash: 0x0x006F9BA2
+* Build: 323
+

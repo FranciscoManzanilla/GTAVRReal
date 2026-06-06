@@ -1,0 +1,14 @@
+# _SHOW_START_MISSION_INSTRUCTIONAL_BUTTON
+
+--- ns: HUD aliases: ["0xF1A6C18B35BCADE6"] --- ## SHOW_START_MISSION_INSTRUCTIONAL_BUTTON  // 0xF1A6C18B35BCADE6 0xA2CAAB4F void SHOW_START_MISSION_INSTRUCTIONAL_BUTTON(BOOL p0);   ## Parameters * **p0**:
+
+### Parameters
+* BOOL toggle
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0xA2CAAB4F
+* Build: 323
+

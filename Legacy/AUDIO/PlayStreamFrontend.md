@@ -1,0 +1,11 @@
+# _PLAY_STREAM_FRONTEND
+
+--- ns: AUDIO --- ## PLAY_STREAM_FRONTEND  // 0x58FCE43488F9F5F4 0x2C2A16BC void PLAY_STREAM_FRONTEND();
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x2C2A16BC
+* Build: 323
+

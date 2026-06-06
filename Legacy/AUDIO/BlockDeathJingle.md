@@ -1,0 +1,14 @@
+# _BLOCK_DEATH_JINGLE
+
+--- ns: AUDIO aliases: ["0xF154B8D1775B2DEC"] --- ## BLOCK_DEATH_JINGLE  // 0xF154B8D1775B2DEC 0xD2858D8A void BLOCK_DEATH_JINGLE(BOOL blocked);  ## Parameters * **blocked**: Sets if the death jingle can play when a player dies or not
+
+### Parameters
+* BOOL toggle
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0xD2858D8A
+* Build: 323
+

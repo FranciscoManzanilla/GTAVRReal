@@ -1,0 +1,11 @@
+# _GET_FINAL_RENDERED_CAM_NEAR_DOF
+
+--- ns: CAM aliases: ["0xA03502FC581F7D9B","_GET_GAMEPLAY_CAM_NEAR_DOF"] --- ## GET_FINAL_RENDERED_CAM_NEAR_DOF  // 0xA03502FC581F7D9B 0x19297A7A float GET_FINAL_RENDERED_CAM_NEAR_DOF();  ## Return value
+
+### Return Value
+* float
+
+### Notes
+* AP Hash: 0x0x19297A7A
+* Build: 323
+

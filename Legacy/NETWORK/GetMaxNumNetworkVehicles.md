@@ -1,0 +1,11 @@
+# _GET_MAX_NUM_NETWORK_VEHICLES
+
+--- ns: NETWORK aliases: ["0x0AFCE529F69B21FF"] --- ## GET_MAX_NUM_NETWORK_VEHICLES  // 0x0AFCE529F69B21FF 0xC3A12135 int GET_MAX_NUM_NETWORK_VEHICLES();  ## Return value
+
+### Return Value
+* int
+
+### Notes
+* AP Hash: 0x0xC3A12135
+* Build: 323
+

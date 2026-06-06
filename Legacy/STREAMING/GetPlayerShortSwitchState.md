@@ -1,0 +1,11 @@
+# _GET_PLAYER_SHORT_SWITCH_STATE
+
+--- ns: STREAMING --- ## GET_PLAYER_SHORT_SWITCH_STATE  // 0x20F898A5D9782800 0x9B7BA38F int GET_PLAYER_SHORT_SWITCH_STATE();   ## Return value
+
+### Return Value
+* int
+
+### Notes
+* AP Hash: 0x0x9B7BA38F
+* Build: 323
+

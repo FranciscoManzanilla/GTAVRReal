@@ -1,0 +1,17 @@
+# _SEETHROUGH_SET_HEATSCALE
+
+--- ns: GRAPHICS aliases: ["0xD7D0B00177485411"] --- ## SEETHROUGH_SET_HEATSCALE  // 0xD7D0B00177485411 0x654F0287 void SEETHROUGH_SET_HEATSCALE(int index, float heatScale);   ## Parameters * **index**: * **heatScale**: min: 0.0 max: 0.75
+
+### Parameters
+* int index
+* float heatScale
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x654F0287
+* Build: 323
+* min: 0.0
+max: 0.75
+

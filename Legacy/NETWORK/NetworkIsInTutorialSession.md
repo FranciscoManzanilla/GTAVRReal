@@ -1,0 +1,11 @@
+# _NETWORK_IS_IN_TUTORIAL_SESSION
+
+--- ns: NETWORK --- ## NETWORK_IS_IN_TUTORIAL_SESSION  // 0xADA24309FE08DACF 0x34DD7B28 cs_type(Any) BOOL NETWORK_IS_IN_TUTORIAL_SESSION();  ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x34DD7B28
+* Build: 323
+

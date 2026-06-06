@@ -1,0 +1,11 @@
+# _STAT_ROLLBACK_SAVE_MIGRATION
+
+No description available.
+
+### Return Value
+* BOOL
+
+### Notes
+* Build: 323
+* This function is hard-coded to always return 1.
+

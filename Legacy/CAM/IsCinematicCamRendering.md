@@ -1,0 +1,11 @@
+# _IS_CINEMATIC_CAM_RENDERING
+
+--- ns: CAM --- ## IS_CINEMATIC_CAM_RENDERING  // 0xB15162CB5826E9E8 0x80471AD9 BOOL IS_CINEMATIC_CAM_RENDERING();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x80471AD9
+* Build: 323
+

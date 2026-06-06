@@ -1,0 +1,14 @@
+# _IS_MOUNTED_WEAPON_TASK_UNDERNEATH_DRIVING_TASK
+
+--- ns: TASK --- ## IS_MOUNTED_WEAPON_TASK_UNDERNEATH_DRIVING_TASK  // 0xA320EF046186FA3B 0x291E938C BOOL IS_MOUNTED_WEAPON_TASK_UNDERNEATH_DRIVING_TASK(Ped ped);   ## Parameters * **ped**:  ## Return value
+
+### Parameters
+* Ped ped
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x291E938C
+* Build: 323
+

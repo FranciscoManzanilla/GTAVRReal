@@ -1,0 +1,11 @@
+# _SET_RANDOM_WEATHER_TYPE
+
+--- ns: MISC --- ## SET_RANDOM_WEATHER_TYPE  // 0x8B05F884CF7E8020 0xE7AA1BC9 void SET_RANDOM_WEATHER_TYPE();
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0xE7AA1BC9
+* Build: 323
+

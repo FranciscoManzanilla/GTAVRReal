@@ -1,0 +1,11 @@
+# _IS_PAUSE_MENU_RESTARTING
+
+--- ns: HUD --- ## IS_PAUSE_MENU_RESTARTING  // 0x1C491717107431C7 0x3C4CF4D9 BOOL IS_PAUSE_MENU_RESTARTING();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x3C4CF4D9
+* Build: 323
+

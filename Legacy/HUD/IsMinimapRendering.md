@@ -1,0 +1,11 @@
+# _IS_MINIMAP_RENDERING
+
+--- ns: HUD aliases: ["0xAF754F20EB5CD51A","_IS_RADAR_ENABLED"] --- ## IS_MINIMAP_RENDERING  // 0xAF754F20EB5CD51A 0x9CD18314 BOOL IS_MINIMAP_RENDERING();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x9CD18314
+* Build: 323
+

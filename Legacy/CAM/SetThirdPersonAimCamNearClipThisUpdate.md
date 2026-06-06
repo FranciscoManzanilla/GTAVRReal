@@ -1,0 +1,14 @@
+# _SET_THIRD_PERSON_AIM_CAM_NEAR_CLIP_THIS_UPDATE
+
+--- ns: CAM aliases: ["0x42156508606DE65E","_SET_THIRD_PERSON_AIM_CAM_NEAR_CLIP"] --- ## SET_THIRD_PERSON_AIM_CAM_NEAR_CLIP_THIS_UPDATE  // 0x42156508606DE65E 0x71E9C63E void SET_THIRD_PERSON_AIM_CAM_NEAR_CLIP_THIS_UPDATE(float distance);  ## Parameters * **distance**:
+
+### Parameters
+* float p0
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x71E9C63E
+* Build: 323
+

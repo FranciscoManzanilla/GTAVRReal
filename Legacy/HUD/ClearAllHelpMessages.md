@@ -1,0 +1,11 @@
+# _CLEAR_ALL_HELP_MESSAGES
+
+--- ns: HUD --- ## CLEAR_ALL_HELP_MESSAGES  // 0x6178F68A87A4D3A0 0x9E5D9198 void CLEAR_ALL_HELP_MESSAGES();
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x9E5D9198
+* Build: 323
+

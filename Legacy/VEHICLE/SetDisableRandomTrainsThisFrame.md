@@ -1,0 +1,14 @@
+# _SET_DISABLE_RANDOM_TRAINS_THIS_FRAME
+
+--- ns: VEHICLE aliases: ["0xD4B8E3D1917BC86B","_SET_SOMETHING_MULTIPLIER_THIS_FRAME"] --- ## SET_DISABLE_RANDOM_TRAINS_THIS_FRAME  // 0xD4B8E3D1917BC86B 0x09462665 void SET_DISABLE_RANDOM_TRAINS_THIS_FRAME(BOOL toggle);  ## Parameters * **toggle**:
+
+### Parameters
+* BOOL toggle
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x09462665
+* Build: 323
+

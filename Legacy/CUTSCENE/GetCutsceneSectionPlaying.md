@@ -1,0 +1,11 @@
+# _GET_CUTSCENE_SECTION_PLAYING
+
+--- ns: CUTSCENE --- ## GET_CUTSCENE_SECTION_PLAYING  // 0x49010A6A396553D8 0x1026F0D6 int GET_CUTSCENE_SECTION_PLAYING();   ## Return value
+
+### Return Value
+* int
+
+### Notes
+* AP Hash: 0x0x1026F0D6
+* Build: 323
+

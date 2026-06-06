@@ -1,0 +1,14 @@
+# _CLEAR_DRIVEBY_TASK_UNDERNEATH_DRIVING_TASK
+
+--- ns: TASK --- ## CLEAR_DRIVEBY_TASK_UNDERNEATH_DRIVING_TASK  // 0xC35B5CDB2824CF69 0x9B76F7E6 void CLEAR_DRIVEBY_TASK_UNDERNEATH_DRIVING_TASK(Ped ped);   ## Parameters * **ped**:
+
+### Parameters
+* Ped ped
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x9B76F7E6
+* Build: 323
+

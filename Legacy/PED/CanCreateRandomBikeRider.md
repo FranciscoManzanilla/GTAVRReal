@@ -1,0 +1,11 @@
+# _CAN_CREATE_RANDOM_BIKE_RIDER
+
+--- ns: PED --- ## CAN_CREATE_RANDOM_BIKE_RIDER  // 0xEACEEDA81751915C 0x7018BE31 BOOL CAN_CREATE_RANDOM_BIKE_RIDER();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x7018BE31
+* Build: 323
+

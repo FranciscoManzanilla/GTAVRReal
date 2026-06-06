@@ -1,0 +1,11 @@
+# _IS_FIRST_PERSON_AIM_CAM_ACTIVE
+
+--- ns: CAM --- ## IS_FIRST_PERSON_AIM_CAM_ACTIVE  // 0x5E346D934122613F 0xD6280468 BOOL IS_FIRST_PERSON_AIM_CAM_ACTIVE();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0xD6280468
+* Build: 323
+

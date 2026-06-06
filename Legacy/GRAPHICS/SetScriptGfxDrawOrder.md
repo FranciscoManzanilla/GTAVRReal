@@ -1,0 +1,22 @@
+# _SET_SCRIPT_GFX_DRAW_ORDER
+
+--- ns: GRAPHICS aliases: ["0x61BB1D9B3A95D802","_SET_2D_LAYER","_SET_UI_LAYER"] --- ## SET_SCRIPT_GFX_DRAW_ORDER  // 0x61BB1D9B3A95D802 0xADF81D24 void SET_SCRIPT_GFX_DRAW_ORDER(int order);  Sets the draw order for script draw commands. Examples from decompiled scripts: GRAPHICS::SET_SCRIPT_GFX_DRAW_ORDER(7); GRAPHICS::DRAW_RECT(0.5, 0.5, 3.0, 3.0, v_4, v_5, v_6, a_0._f172, 0); GRAPHICS::SET_SCRIPT_GFX_DRAW_ORDER(1); GRAPHICS::DRAW_RECT(0.5, 0.5, 1.5, 1.5, 0, 0, 0, 255, 0);  enum eGfxDrawOrder { GFX_ORDER_BEFORE_HUD_PRIORITY_LOW = 0, GFX_ORDER_BEFORE_HUD = 1, GFX_ORDER_BEFORE_HUD_PRIORITY_HIGH = 2, GFX_ORDER_AFTER_HUD_PRIORITY_LOW = 3, GFX_ORDER_AFTER_HUD = 4, GFX_ORDER_AFTER_HUD_PRIORITY_HIGH = 5, GFX_ORDER_AFTER_FADE_PRIORITY_LOW = 6, GFX_ORDER_AFTER_FADE = 7, GFX_ORDER_AFTER_FADE_PRIORITY_HIGH = 8, }  ## Parameters * **order**: The intended draw order/layer.
+
+### Parameters
+* int drawOrder
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0xADF81D24
+* Build: 323
+* Sets the draw order for script draw commands.
+
+Examples from decompiled scripts:
+GRAPHICS::SET_SCRIPT_GFX_DRAW_ORDER(7);
+GRAPHICS::DRAW_RECT(0.5, 0.5, 3.0, 3.0, v_4, v_5, v_6, a_0._f172, 0);
+
+GRAPHICS::SET_SCRIPT_GFX_DRAW_ORDER(1);
+GRAPHICS::DRAW_RECT(0.5, 0.5, 1.5, 1.5, 0, 0, 0, 255, 0);
+

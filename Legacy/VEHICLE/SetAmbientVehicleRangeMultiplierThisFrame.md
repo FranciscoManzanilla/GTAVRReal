@@ -1,0 +1,14 @@
+# _SET_AMBIENT_VEHICLE_RANGE_MULTIPLIER_THIS_FRAME
+
+--- ns: VEHICLE aliases: ["0x90B6DA738A9A25DA", "_SET_SOME_VEHICLE_DENSITY_MULTIPLIER_THIS_FRAME"] --- ## SET_AMBIENT_VEHICLE_RANGE_MULTIPLIER_THIS_FRAME  // 0x90B6DA738A9A25DA 0xDAE2A2BE void SET_AMBIENT_VEHICLE_RANGE_MULTIPLIER_THIS_FRAME(float range);  ## Parameters * **range**: Most likely a value between 0.0 and 1.0.
+
+### Parameters
+* float value
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0xDAE2A2BE
+* Build: 323
+

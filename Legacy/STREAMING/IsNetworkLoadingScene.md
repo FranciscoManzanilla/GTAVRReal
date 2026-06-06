@@ -1,0 +1,11 @@
+# _IS_NETWORK_LOADING_SCENE
+
+--- ns: STREAMING --- ## IS_NETWORK_LOADING_SCENE  // 0x41CA5A33160EA4AB 0x6DCFC021 BOOL IS_NETWORK_LOADING_SCENE();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x6DCFC021
+* Build: 323
+

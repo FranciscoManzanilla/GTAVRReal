@@ -1,0 +1,18 @@
+# _SET_FIRST_PERSON_FLASH_EFFECT_VEHICLE_MODEL_NAME
+
+No description available.
+
+### Parameters
+* const char* vehicleName
+
+### Return Value
+* void
+
+### Notes
+* Build: 323
+* From b617 scripts:
+
+CAM::SET_FIRST_PERSON_FLASH_EFFECT_VEHICLE_MODEL_NAME("DINGHY");
+CAM::SET_FIRST_PERSON_FLASH_EFFECT_VEHICLE_MODEL_NAME("ISSI2");
+CAM::SET_FIRST_PERSON_FLASH_EFFECT_VEHICLE_MODEL_NAME("SPEEDO");
+

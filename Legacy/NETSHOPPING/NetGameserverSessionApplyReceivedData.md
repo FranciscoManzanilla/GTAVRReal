@@ -1,0 +1,13 @@
+# _NET_GAMESERVER_SESSION_APPLY_RECEIVED_DATA
+
+--- ns: NETSHOPPING aliases: ["0x2F41D51BA3BCD1F1","_NETWORK_SHOP_SESSION_APPLY_RECEIVED_DATA"] --- ## _NET_GAMESERVER_SESSION_APPLY_RECEIVED_DATA  // 0x2F41D51BA3BCD1F1 BOOL _NET_GAMESERVER_SESSION_APPLY_RECEIVED_DATA(int charSlot);   ## Parameters * **charSlot**:  ## Return value
+
+### Parameters
+* int charSlot
+
+### Return Value
+* BOOL
+
+### Notes
+* Build: 323
+

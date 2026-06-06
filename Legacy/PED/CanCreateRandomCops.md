@@ -1,0 +1,11 @@
+# _CAN_CREATE_RANDOM_COPS
+
+--- ns: PED --- ## CAN_CREATE_RANDOM_COPS  // 0x5EE2CAFF7F17770D 0xAA73DAD9 BOOL CAN_CREATE_RANDOM_COPS();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0xAA73DAD9
+* Build: 323
+

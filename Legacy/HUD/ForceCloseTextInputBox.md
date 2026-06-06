@@ -1,0 +1,10 @@
+# _FORCE_CLOSE_TEXT_INPUT_BOX
+
+--- ns: HUD aliases: ["0x8817605C2BA76200", "_FORCE_CLOSE_TEXT_INPUT_BOX"] --- ## FORCE_CLOSE_TEXT_INPUT_BOX  // 0x8817605C2BA76200 void FORCE_CLOSE_TEXT_INPUT_BOX();
+
+### Return Value
+* void
+
+### Notes
+* Build: 323
+

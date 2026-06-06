@@ -1,0 +1,11 @@
+# _HAS_CUTSCENE_FINISHED
+
+--- ns: CUTSCENE --- ## HAS_CUTSCENE_FINISHED  // 0x7C0A893088881D57 0x5DED14B4 BOOL HAS_CUTSCENE_FINISHED();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x5DED14B4
+* Build: 323
+

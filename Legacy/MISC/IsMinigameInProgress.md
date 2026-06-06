@@ -1,0 +1,11 @@
+# _IS_MINIGAME_IN_PROGRESS
+
+--- ns: MISC --- ## IS_MINIGAME_IN_PROGRESS  // 0x2B4A15E44DE0F478 0x53A95E13 BOOL IS_MINIGAME_IN_PROGRESS();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x53A95E13
+* Build: 323
+

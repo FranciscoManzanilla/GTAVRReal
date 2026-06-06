@@ -1,0 +1,11 @@
+# _BUSYSPINNER_IS_ON
+
+--- ns: HUD aliases: ["0xD422FCC5F239A915","_IS_LOADING_PROMPT_BEING_DISPLAYED"] --- ## BUSYSPINNER_IS_ON  // 0xD422FCC5F239A915 0xB8B3A5D0 BOOL BUSYSPINNER_IS_ON();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0xB8B3A5D0
+* Build: 323
+

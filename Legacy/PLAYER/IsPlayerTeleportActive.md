@@ -1,0 +1,11 @@
+# _IS_PLAYER_TELEPORT_ACTIVE
+
+--- ns: PLAYER --- ## IS_PLAYER_TELEPORT_ACTIVE  // 0x02B15662D7F8886F 0x3A11D118 BOOL IS_PLAYER_TELEPORT_ACTIVE();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x3A11D118
+* Build: 323
+

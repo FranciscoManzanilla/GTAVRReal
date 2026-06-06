@@ -1,0 +1,11 @@
+# _UNLOCK_MINIMAP_ANGLE
+
+--- ns: HUD --- ## UNLOCK_MINIMAP_ANGLE  // 0x8183455E16C42E3A 0x742043F9 void UNLOCK_MINIMAP_ANGLE();
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x742043F9
+* Build: 323
+

@@ -1,0 +1,11 @@
+# _QUEUE_MISSION_REPEAT_LOAD
+
+--- ns: MISC aliases: ["0x72DE52178C291CB5"] --- ## QUEUE_MISSION_REPEAT_LOAD  // 0x72DE52178C291CB5 0xF62B3C48 cs_type(Any) BOOL QUEUE_MISSION_REPEAT_LOAD();  ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0xF62B3C48
+* Build: 323
+

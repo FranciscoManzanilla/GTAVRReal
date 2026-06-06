@@ -1,0 +1,14 @@
+# _DISABLE_PLAYER_VEHICLE_REWARDS
+
+--- ns: PLAYER --- ## DISABLE_PLAYER_VEHICLE_REWARDS  // 0xC142BE3BB9CE125F 0x8C6E611D void DISABLE_PLAYER_VEHICLE_REWARDS(Player player);  Disables vehicle rewards for the current frame.  ## Parameters * **player**: The player to disable rewards
+
+### Parameters
+* Player player
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x8C6E611D
+* Build: 323
+

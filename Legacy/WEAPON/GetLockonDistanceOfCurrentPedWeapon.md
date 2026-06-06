@@ -1,0 +1,14 @@
+# _GET_LOCKON_DISTANCE_OF_CURRENT_PED_WEAPON
+
+--- ns: WEAPON aliases: ["0x840F03E9041E2C9C","_GET_LOCKON_RANGE_OF_CURRENT_PED_WEAPON"] --- ## GET_LOCKON_DISTANCE_OF_CURRENT_PED_WEAPON  // 0x840F03E9041E2C9C 0x3612110D float GET_LOCKON_DISTANCE_OF_CURRENT_PED_WEAPON(Ped ped);   ## Parameters * **ped**:  ## Return value
+
+### Parameters
+* Ped ped
+
+### Return Value
+* float
+
+### Notes
+* AP Hash: 0x0x3612110D
+* Build: 323
+

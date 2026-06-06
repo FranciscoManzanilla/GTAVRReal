@@ -1,0 +1,11 @@
+# _FORCE_CLOSE_REPORTUGC_MENU
+
+--- ns: HUD aliases: ["0xEE4C0E6DBC6F2C6F"] --- ## FORCE_CLOSE_REPORTUGC_MENU  // 0xEE4C0E6DBC6F2C6F 0x67649EE0 void FORCE_CLOSE_REPORTUGC_MENU();
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x67649EE0
+* Build: 323
+

@@ -1,0 +1,20 @@
+# _SET_RADIO_STATION_MUSIC_ONLY
+
+--- ns: AUDIO aliases: ["0x774BD811F656A122"] --- ## SET_RADIO_STATION_MUSIC_ONLY  // 0x774BD811F656A122 0xB1FF7137 void SET_RADIO_STATION_MUSIC_ONLY(char* radioStation, BOOL toggle);  6 calls in the b617d scripts, removed identical lines: AUDIO::SET_RADIO_STATION_MUSIC_ONLY("RADIO_01_CLASS_ROCK", 1); AUDIO::SET_RADIO_STATION_MUSIC_ONLY(AUDIO::GET_RADIO_STATION_NAME(10), 0); AUDIO::SET_RADIO_STATION_MUSIC_ONLY(AUDIO::GET_RADIO_STATION_NAME(10), 1);  ## Parameters * **radioStation**: * **toggle**:
+
+### Parameters
+* const char* radioStation
+* BOOL toggle
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0xB1FF7137
+* Build: 323
+* 6 calls in the b617d scripts, removed identical lines:
+
+AUDIO::SET_RADIO_STATION_MUSIC_ONLY("RADIO_01_CLASS_ROCK", 1);
+AUDIO::SET_RADIO_STATION_MUSIC_ONLY(AUDIO::GET_RADIO_STATION_NAME(10), 0);
+AUDIO::SET_RADIO_STATION_MUSIC_ONLY(AUDIO::GET_RADIO_STATION_NAME(10), 1);
+

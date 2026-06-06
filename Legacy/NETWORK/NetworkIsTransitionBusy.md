@@ -1,0 +1,11 @@
+# _NETWORK_IS_TRANSITION_BUSY
+
+--- ns: NETWORK --- ## NETWORK_IS_TRANSITION_BUSY  // 0x520F3282A53D26B7 0xA357A2C6 cs_type(Any) BOOL NETWORK_IS_TRANSITION_BUSY();  ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0xA357A2C6
+* Build: 323
+

@@ -1,0 +1,11 @@
+# _GET_GAMEPLAY_CAM_RELATIVE_HEADING
+
+--- ns: CAM --- ## GET_GAMEPLAY_CAM_RELATIVE_HEADING  // 0x743607648ADD4587 0xCAF839C2 float GET_GAMEPLAY_CAM_RELATIVE_HEADING();   ## Return value
+
+### Return Value
+* float
+
+### Notes
+* AP Hash: 0x0xCAF839C2
+* Build: 323
+

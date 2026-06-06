@@ -1,0 +1,14 @@
+# _NETWORK_CLAN_REQUEST_EMBLEM
+
+--- ns: NETWORK aliases: ["0x13518FF1C6B28938"] --- ## NETWORK_CLAN_REQUEST_EMBLEM  // 0x13518FF1C6B28938 0x7963FA4D BOOL NETWORK_CLAN_REQUEST_EMBLEM(Any p0);  ## Parameters * **p0**:  ## Return value
+
+### Parameters
+* Any p0
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x7963FA4D
+* Build: 323
+

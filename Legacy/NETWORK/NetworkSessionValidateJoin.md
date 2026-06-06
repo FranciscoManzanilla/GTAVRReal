@@ -1,0 +1,14 @@
+# _NETWORK_SESSION_VALIDATE_JOIN
+
+--- ns: NETWORK aliases: ["0xC19F6C8E7865A6FF","_NETWORK_SESSION_HOSTED"] --- ## NETWORK_SESSION_VALIDATE_JOIN  // 0xC19F6C8E7865A6FF 0xF3768F90 void NETWORK_SESSION_VALIDATE_JOIN(BOOL p0);   ## Parameters * **p0**:
+
+### Parameters
+* BOOL p0
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0xF3768F90
+* Build: 323
+

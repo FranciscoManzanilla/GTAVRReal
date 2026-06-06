@@ -1,0 +1,11 @@
+# _HAS_PTFX_ASSET_LOADED
+
+--- ns: STREAMING --- ## HAS_PTFX_ASSET_LOADED  // 0xCA7D9B86ECA7481B 0x3EFF96BE BOOL HAS_PTFX_ASSET_LOADED();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x3EFF96BE
+* Build: 323
+

@@ -1,0 +1,11 @@
+# _GET_STANDARD_BLIP_ENUM_ID
+
+--- ns: HUD aliases: ["0x4A9923385BDB9DAD","_GET_LEVEL_BLIP_SPRITE"] --- ## GET_STANDARD_BLIP_ENUM_ID  // 0x4A9923385BDB9DAD 0x87871CE0 cs_type(BOOL) int GET_STANDARD_BLIP_ENUM_ID();  ## Return value
+
+### Return Value
+* int
+
+### Notes
+* AP Hash: 0x0x87871CE0
+* Build: 323
+

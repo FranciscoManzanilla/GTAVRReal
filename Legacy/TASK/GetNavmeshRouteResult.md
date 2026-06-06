@@ -1,0 +1,15 @@
+# _GET_NAVMESH_ROUTE_RESULT
+
+--- ns: TASK --- ## GET_NAVMESH_ROUTE_RESULT  // 0x632E831F382A0FA8 0x96491602 int GET_NAVMESH_ROUTE_RESULT(Ped ped);  See [`GET_NAVMESH_ROUTE_DISTANCE_REMAINING`](#_0xC6F5C0BCDC74D62D) for more details.  ## Parameters * **ped**:  ## Return value
+
+### Parameters
+* Ped ped
+
+### Return Value
+* int
+
+### Notes
+* AP Hash: 0x0x96491602
+* Build: 323
+* See GET_NAVMESH_ROUTE_DISTANCE_REMAINING for more details.
+

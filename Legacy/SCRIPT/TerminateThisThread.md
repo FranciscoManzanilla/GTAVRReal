@@ -1,0 +1,11 @@
+# _TERMINATE_THIS_THREAD
+
+--- ns: SCRIPT --- ## TERMINATE_THIS_THREAD  // 0x1090044AD1DA76FA 0x3CD9CBB7 void TERMINATE_THIS_THREAD();
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x3CD9CBB7
+* Build: 323
+

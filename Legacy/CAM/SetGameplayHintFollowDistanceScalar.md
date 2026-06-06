@@ -1,0 +1,14 @@
+# _SET_GAMEPLAY_HINT_FOLLOW_DISTANCE_SCALAR
+
+--- ns: CAM aliases: ["0xF8BDBF3D573049A1","_SET_GAMEPLAY_HINT_ANIM_OFFSETZ"] --- ## SET_GAMEPLAY_HINT_FOLLOW_DISTANCE_SCALAR  // 0xF8BDBF3D573049A1 0x72E8CD3A void SET_GAMEPLAY_HINT_FOLLOW_DISTANCE_SCALAR(float value);  ## Parameters * **value**:
+
+### Parameters
+* float value
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x72E8CD3A
+* Build: 323
+

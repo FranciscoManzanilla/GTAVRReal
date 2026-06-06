@@ -1,0 +1,11 @@
+# _STOP_PLAYER_SWITCH
+
+--- ns: STREAMING --- ## STOP_PLAYER_SWITCH  // 0x95C0A5BBDC189AA1 0x2832C010 void STOP_PLAYER_SWITCH();
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x2832C010
+* Build: 323
+

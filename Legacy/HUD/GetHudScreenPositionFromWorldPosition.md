@@ -1,0 +1,19 @@
+# _GET_HUD_SCREEN_POSITION_FROM_WORLD_POSITION
+
+--- ns: HUD aliases: ["0xF9904D11F1ACBEC3","_GET_2D_COORD_FROM_3D_COORD"] --- ## GET_HUD_SCREEN_POSITION_FROM_WORLD_POSITION  // 0xF9904D11F1ACBEC3 0xFE9A39F8 BOOL GET_HUD_SCREEN_POSITION_FROM_WORLD_POSITION(float worldX, float worldY, float worldZ, float* screenX, float* screenY);  World to relative screen coords this world to screen will keep the text on screen. it will keep it in the screen pos  ## Parameters * **worldX**: * **worldY**: * **worldZ**: * **screenX**: * **screenY**:  ## Return value
+
+### Parameters
+* float worldX
+* float worldY
+* float worldZ
+* float* screenX
+* float* screenY
+
+### Return Value
+* int
+
+### Notes
+* AP Hash: 0x0xFE9A39F8
+* Build: 323
+* World to relative screen coords, this world to screen will keep the text on screen. Was named _GET_SCREEN_COORD_FROM_WORLD_COORD, but this conflicts with 0x34E82F05DF2974F5. As that hash actually matches GET_SCREEN_COORD_FROM_WORLD_COORD that one supercedes and this one was renamed to _GET_2D_COORD_FROM_3D_COORD
+

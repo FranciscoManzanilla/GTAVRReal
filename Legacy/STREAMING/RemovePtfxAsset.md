@@ -1,0 +1,11 @@
+# _REMOVE_PTFX_ASSET
+
+--- ns: STREAMING --- ## REMOVE_PTFX_ASSET  // 0x88C6814073DD4A73 0xC10F178C void REMOVE_PTFX_ASSET();
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0xC10F178C
+* Build: 323
+

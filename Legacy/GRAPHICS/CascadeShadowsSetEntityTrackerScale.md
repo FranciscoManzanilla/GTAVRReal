@@ -1,0 +1,14 @@
+# _CASCADE_SHADOWS_SET_ENTITY_TRACKER_SCALE
+
+--- ns: GRAPHICS aliases: ["0x5E9DAF5A20F15908"] --- ## CASCADE_SHADOWS_SET_ENTITY_TRACKER_SCALE  // 0x5E9DAF5A20F15908 0xD2157428 void CASCADE_SHADOWS_SET_ENTITY_TRACKER_SCALE(float p0);  ## Parameters * **p0**:
+
+### Parameters
+* float p0
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0xD2157428
+* Build: 323
+

@@ -1,0 +1,15 @@
+# _DATAFILE_START_SAVE_TO_CLOUD
+
+--- ns: DATAFILE aliases: ["0x83BCCE3224735F05"] --- ## DATAFILE_START_SAVE_TO_CLOUD  // 0x83BCCE3224735F05 0x768CBB35 BOOL DATAFILE_START_SAVE_TO_CLOUD(char* filename);  NativeDB Added Parameter 2: Any p1  ## Parameters * **filename**:  ## Return value
+
+### Parameters
+* const char* filename
+* Any p1
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x768CBB35
+* Build: 323
+

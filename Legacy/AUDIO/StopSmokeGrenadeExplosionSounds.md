@@ -1,0 +1,11 @@
+# _STOP_SMOKE_GRENADE_EXPLOSION_SOUNDS
+
+--- ns: AUDIO aliases: ["0xE4E6DD5566D28C82"] --- ## STOP_SMOKE_GRENADE_EXPLOSION_SOUNDS  // 0xE4E6DD5566D28C82 0x7262B5BA void STOP_SMOKE_GRENADE_EXPLOSION_SOUNDS();  Stops all smoke grenade sounds
+
+### Return Value
+* void
+
+### Notes
+* AP Hash: 0x0x7262B5BA
+* Build: 323
+

@@ -1,0 +1,14 @@
+# _UGC_GET_CONTENT_HAS_PLAYER_BOOKMARKED
+
+--- ns: NETWORK aliases: ["0x993CBE59D350D225"] --- ## UGC_GET_CONTENT_HAS_PLAYER_BOOKMARKED  // 0x993CBE59D350D225 0x0DEB3F5A BOOL UGC_GET_CONTENT_HAS_PLAYER_BOOKMARKED(Any p0);  ## Parameters * **p0**:  ## Return value
+
+### Parameters
+* Any p0
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0x0DEB3F5A
+* Build: 323
+

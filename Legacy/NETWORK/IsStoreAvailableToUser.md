@@ -1,0 +1,11 @@
+# _IS_STORE_AVAILABLE_TO_USER
+
+--- ns: NETWORK aliases: ["0x883D79C4071E18B3"] --- ## IS_STORE_AVAILABLE_TO_USER  // 0x883D79C4071E18B3 0xD32FA11F BOOL IS_STORE_AVAILABLE_TO_USER();   ## Return value
+
+### Return Value
+* BOOL
+
+### Notes
+* AP Hash: 0x0xD32FA11F
+* Build: 323
+
