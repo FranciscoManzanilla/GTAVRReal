@@ -40,10 +40,11 @@
 //
 // 5. Write the result to g_RVRData for the render DLL:
 //      slot = frameIndex & 3
-//      [g_RVRData + slot * 256 + 0x890] = row-major float[16]
-//      [g_RVRData + slot * 256 + 0x910] = column-major (transposed) float[16]
-//    The row-major copy is read by the engine; the column-major copy is
-//    used by the HLSL shaders in the proxy DLL.
+//      [g_RVRData + slot * 64 + 0x890] = eye view matrix
+//      [g_RVRData + slot * 64 + 0x910] = projection source copy
+//      [g_RVRData + slot * 64 + 0x990] = opposite-eye view matrix
+//      [g_RVRData + slot * 64 + 0xA10] = projection copy read by the proxy
+//    The 64-byte stride is confirmed from the original ASI (shl r9, 6).
 //
 // 6. Store one entry in the local ring-buffer (s_poseRing) so the script
 //    thread can read the current HMD yaw/pitch without accessing g_RVRData.
@@ -111,9 +112,58 @@ extern "C" void         RVR_ClearPoseRing(){ s_poseCount = 0; }
 // runs ~1944x/sec, so these counters reveal whether the capture ever fires during
 // gameplay (the 2s script-thread heartbeat sampling was too coarse for per-frame
 // transient flags). Read+reset from the script-thread heartbeat.
-extern "C" volatile long g_e0SeenCount    = 0;  // times g_RVRData[0xE0] != 0
-extern "C" volatile long g_sceneSeenCount = 0;  // times [0x36BDC8] != NULL
-extern "C" volatile long g_aviCallCount   = 0;  // total AdjustViewInverse calls
+extern "C" volatile long g_e0SeenCount       = 0;  // times g_RVRData[0xE0] != 0
+extern "C" volatile long g_i10SeenCount      = 0;  // times g_RVRData[0x10] != 0
+extern "C" volatile long g_i11SeenCount      = 0;  // times g_RVRData[0x11] != 0
+extern "C" volatile long g_sceneSeenCount    = 0;  // times [0x36BDC8] != NULL
+extern "C" volatile long g_managerSeenCount  = 0;  // times [g_RVRData+0x8] != NULL
+extern "C" volatile long g_df50SeenCount     = 0;  // times proxy global DF50 != 0 (base+0x840)
+extern "C" volatile long g_d789SeenCount     = 0;  // times proxy global D789 != 0 (base+0x79)
+extern "C" volatile long g_frameDescCalls    = 0;  // RVRGetFrameDesc calls from RT
+extern "C" volatile long g_frameDescNoScene  = 0;  // skips because scene slot is NULL
+extern "C" volatile long g_frameDescErrors   = 0;  // exceptions around RVRGetFrameDesc
+extern "C" volatile long g_managerGateTrue   = 0;  // optional probe result true
+extern "C" volatile long g_managerGateFalse  = 0;  // optional probe result false
+extern "C" volatile long g_managerGateErrors = 0;  // optional probe exception
+extern "C" volatile long g_aviCallCount      = 0;  // total AdjustViewInverse calls
+extern "C" volatile long g_captureArmCount   = 0;  // times we pulse g_RVRData[0xE0]
+extern "C" volatile long g_captureArmSkipped = 0;  // frame already armed or unsafe
+
+// Off by default: probing manager->vtable[0x38]() duplicates a proxy gate call,
+// so enable only for a throwaway diagnostic build if passive counters are not enough.
+#ifndef RVR_PROBE_MANAGER_GATE_CALL
+#define RVR_PROBE_MANAGER_GATE_CALL 0
+#endif
+
+// Gameplay currently leaves the proxy capture gate disarmed (g_RVRData[0xE0] = 0)
+// while pause/menu arms it. This probe can pulse it once per proxy frame, but it
+// is off by default because the proxy may attempt expensive captures on the
+// wrong draw passes and stall/flicker.
+#ifndef RVR_ARM_CAPTURE_ON_VIEW
+#define RVR_ARM_CAPTURE_ON_VIEW 0
+#endif
+
+// Safety diagnostic: until the proxy reliably captures the world frame for both
+// eyes, keep both view matrices centered to avoid eye strain from mismatched
+// stereo/reprojection paths.
+#ifndef RVR_FORCE_MONO_VIEW
+#define RVR_FORCE_MONO_VIEW 1
+#endif
+
+// Pair with RVR_FORCE_MONO_VIEW: keep the proxy frame descriptor on one eye so
+// a partially recovered capture path does not present one eye as VR and the
+// other as a flat/screen pass during diagnostics.
+#ifndef RVR_FORCE_MONO_FRAMEDESC
+#define RVR_FORCE_MONO_FRAMEDESC 0
+#endif
+
+// Original ASI AdjustViewInverse starts with:
+//   mov cl, 41h
+//   call RVRSeqCheck
+// In our bridge naming this is the remapped RVRWaitAndTrackHMD slot.
+#ifndef RVR_RENDERTHREAD_SEQCHECK_41
+#define RVR_RENDERTHREAD_SEQCHECK_41 1
+#endif
 
 // g_RVRData layout constants (proxy DLL r7) -- CORRECTED from RE of the
 // original AdjustViewInverse (RVA 0x3F02): the view matrix output uses a
@@ -124,8 +174,66 @@ extern "C" volatile long g_aviCallCount   = 0;  // total AdjustViewInverse calls
 static const uint32_t POSE_IN_STRIDE  = 0x1C;   // 28 bytes per slot (imul 28, confirmed)
 static const uint32_t POSE_IN_BASE    = 0x77C;  // byte offset to first pose slot
 static const uint32_t POSE_OUT_STRIDE = 64;     // 64 bytes per slot (shl r9, 6)
-static const uint32_t POSE_OUT_ROW    = 0x910;  // row-major view matrix output (proxy reads here)
+static const uint32_t POSE_OUT_VIEW   = 0x890;  // row-major view matrix output (proxy reads here)
 static const uint32_t POSE_OUT_SLOTS  = 4;      // ring of 4 slots
+
+static inline void RVR_SampleProxyGate(uint8_t* base) {
+    if (!base) return;
+    __try {
+        if (*(volatile uint8_t*)(base + 0xE0) != 0) ++g_e0SeenCount;
+        if (*(volatile uint8_t*)(base + 0x10) != 0) ++g_i10SeenCount;
+        if (*(volatile uint8_t*)(base + 0x11) != 0) ++g_i11SeenCount;
+        if (*(void* volatile*)(base - 0x1948) != nullptr) ++g_sceneSeenCount;
+        if (*(void* volatile*)(base + 0x8) != nullptr) ++g_managerSeenCount;
+        if (*(volatile uint8_t*)(base + 0x840) != 0) ++g_df50SeenCount;
+        if (*(volatile uint8_t*)(base + 0x79) != 0) ++g_d789SeenCount;
+#if RVR_PROBE_MANAGER_GATE_CALL
+        void* mgr = *(void**)(base + 0x8);
+        if (mgr) {
+            void** vt = *(void***)mgr;
+            using GateFn = bool(__fastcall*)(void*);
+            GateFn gate = vt ? (GateFn)vt[7] : nullptr; // vtable + 0x38
+            if (gate) {
+                bool ok = gate(mgr);
+                if (ok) ++g_managerGateTrue;
+                else    ++g_managerGateFalse;
+            }
+        }
+#endif
+    } __except(EXCEPTION_EXECUTE_HANDLER) {
+#if RVR_PROBE_MANAGER_GATE_CALL
+        ++g_managerGateErrors;
+#endif
+    }
+}
+
+static inline void RVR_ArmCaptureGateOnce(uint8_t* base, uint32_t proxyCounter) {
+#if RVR_ARM_CAPTURE_ON_VIEW
+    static uint32_t s_lastArmedProxyFrame = 0xFFFFFFFFu;
+    if (!base || s_lastArmedProxyFrame == proxyCounter) {
+        ++g_captureArmSkipped;
+        return;
+    }
+
+    __try {
+        const uint8_t i11 = *(volatile uint8_t*)(base + 0x11);
+        void* c0 = *(void**)(base + 0xC0);
+        void* scene = *(void**)(base - 0x1948);
+        if (i11 != 0 && c0 != nullptr && scene == nullptr) {
+            *(volatile uint8_t*)(base + 0xE0) = 1;
+            s_lastArmedProxyFrame = proxyCounter;
+            ++g_captureArmCount;
+        } else {
+            ++g_captureArmSkipped;
+        }
+    } __except(EXCEPTION_EXECUTE_HANDLER) {
+        ++g_captureArmSkipped;
+    }
+#else
+    (void)base;
+    (void)proxyCounter;
+#endif
+}
 
 static inline void Transpose4x4(const float* __restrict src, float* __restrict dst) {
     __m128 r0 = _mm_loadu_ps(src + 0);
@@ -230,12 +338,28 @@ extern "C" void RVR_AdjustViewInverse(
     if (bridge->g_RVRData) {
         uint8_t* base = (uint8_t*)bridge->g_RVRData;
 
+#if RVR_RENDERTHREAD_SEQCHECK_41
+        if (bridge->RVRWaitAndTrackHMD) {
+            __try {
+                bridge->RVRWaitAndTrackHMD(0x41);
+            } __except(EXCEPTION_EXECUTE_HANDLER) {
+            }
+        }
+#endif
+
+        // The proxy draw hooks that publish the scene resource to 0x36BDC8
+        // gate on g_RVRData[0x10] (0x36D720), not only [0x11]. The original ASI
+        // manages both bytes through the runtime manager; keep them asserted
+        // while our reconstructed bridge is active so the capture writer can run.
+        __try {
+            *(volatile uint8_t*)(base + 0x10) = 1;
+            *(volatile uint8_t*)(base + 0x11) = 1;
+        } __except(EXCEPTION_EXECUTE_HANDLER) {
+        }
+
         // Dense capture-gate sampling (see globals above).
         ++g_aviCallCount;
-        __try {
-            if (*(volatile uint8_t*)(base + 0xE0) != 0) ++g_e0SeenCount;
-            if (*(void* volatile*)(base - 0x1948) != nullptr) ++g_sceneSeenCount;
-        } __except(EXCEPTION_EXECUTE_HANDLER) {}
+        RVR_SampleProxyGate(base);
 
         // NOTE: forcing g_RVRData[0xE0]=1 here FROZE THE WHOLE GAME -- proof that
         // [0xE0] is a per-draw toggle the proxy sets only around the main-scene
@@ -260,12 +384,13 @@ extern "C" void RVR_AdjustViewInverse(
         uint32_t proxyCounter = *(volatile uint32_t*)(base + 0x34);
         uint32_t currentFrame = proxyCounter + 1;
         uint32_t slot = currentFrame % POSE_OUT_SLOTS;
+        RVR_ArmCaptureGateOnce(base, proxyCounter);
 
         // Retrieve the HMD orientation for the current slot
         float* rawPose = (float*)(base + POSE_IN_BASE + (slot * POSE_IN_STRIDE));
 
         __try {
-            const float halfIPD = 0.032f;  // ~64mm IPD / 2
+            const float halfIPD = RVR_FORCE_MONO_VIEW ? 0.f : 0.032f;  // ~64mm IPD / 2
             float rightX = result.at(0,0);
             float rightY = result.at(0,1);
             float rightZ = result.at(0,2);
@@ -287,12 +412,12 @@ extern "C" void RVR_AdjustViewInverse(
                 uint8_t* slot = base + s * POSE_OUT_STRIDE;
 
                 // 0x890: Eye view matrix (float[16])
-                memcpy(slot + 0x890, eyeMat[eye], 64);
+                memcpy(slot + POSE_OUT_VIEW, eyeMat[eye], 64);
                 // Zero the homogeneous column of the 3x3 rotation block + set [3][3]=1
-                ((float*)(slot + 0x890))[3]  = 0.f;
-                ((float*)(slot + 0x890))[7]  = 0.f;
-                ((float*)(slot + 0x890))[11] = 0.f;
-                ((float*)(slot + 0x890))[15] = 1.f;
+                ((float*)(slot + POSE_OUT_VIEW))[3]  = 0.f;
+                ((float*)(slot + POSE_OUT_VIEW))[7]  = 0.f;
+                ((float*)(slot + POSE_OUT_VIEW))[11] = 0.f;
+                ((float*)(slot + POSE_OUT_VIEW))[15] = 1.f;
 
                 // 0x910: g_fRVRGameProj (float[16]) -- copied verbatim from proxy buffer
                 if (bridge->g_fRVRGameProj) {
@@ -313,23 +438,20 @@ extern "C" void RVR_AdjustViewInverse(
                 ((float*)(slot + 0x990))[11] = 0.f;
                 ((float*)(slot + 0x990))[15] = 1.f;
 
-                // 0xA10: Sign-flipped copy of XYZ from 0x910 (confirmed from disasm)
-                // Only the first 3 floats of each row are copied (sign flipped).
+                // 0xA10: projection layout reconstructed from 0x4121..0x41D6.
+                // It is not a verbatim matrix copy: row 0 is sign-flipped from
+                // 0x910, row 1 comes from source row 2, and row 2 from source row 1.
                 if (bridge->g_fRVRGameProj) {
                     float* src910 = (float*)(slot + 0x910);
                     float* dst_A10 = (float*)(slot + 0xA10);
-                    // Row 0: flip X,Y,Z; leave W
+                    memset(dst_A10, 0, 64);
                     dst_A10[0] = -src910[0]; dst_A10[1] = -src910[1];
-                    dst_A10[2] = -src910[2]; dst_A10[3] = src910[3];
-                    // Row 1 XYZ
-                    dst_A10[4] = -src910[4]; dst_A10[5] = -src910[5];
-                    dst_A10[6] = -src910[6]; dst_A10[7] = src910[7];
-                    // Row 2 XYZ (reusing the src930 values from disasm)
-                    dst_A10[8]  = src910[8];  dst_A10[9]  = src910[9];
-                    dst_A10[10] = src910[10]; dst_A10[11] = src910[11];
-                    // Row 3 from 0x920 in disasm
-                    dst_A10[12] = src910[8];  dst_A10[13] = src910[9];
-                    dst_A10[14] = src910[10]; dst_A10[15] = src910[11];
+                    dst_A10[2] = -src910[2];
+                    dst_A10[4] =  src910[8]; dst_A10[5] =  src910[9];
+                    dst_A10[6] =  src910[10];
+                    dst_A10[8] =  src910[4]; dst_A10[9] =  src910[5];
+                    dst_A10[10] = src910[6];
+                    dst_A10[15] = 1.f;
                 }
             }
             (void)dominantEye;
@@ -365,19 +487,46 @@ extern "C" void RVR_AdjustViewInverse(
             //   render thread is idle) does a single capture survive long enough
             //   to be presented. That exactly matches the observed symptom.
             //
-            //   The fix: perform the submit HERE, on the render thread, inside
-            //   the ViewInverse hook, and ONLY when a fresh scene has actually
-            //   been captured (resource pointer non-NULL). RVRGetFrameDesc then
-            //   consumes the freshly-captured frame in lockstep with its
-            //   producer. ViewInverse runs ~27x/frame; the first invocation
-            //   after a capture consumes it and the proxy clears the pointer, so
-            //   subsequent invocations in the same frame simply skip.
+            //   The original ASI does NOT guard this call on the scene pointer:
+            //   it writes [0x3C] = currentFrame and calls
+            //   RVRGetFrameDesc(currentFrame, outBuf). The proxy uses that call
+            //   as part of its sequencing, so gating it on [base-0x1948] made
+            //   gameplay stall until pause/menu happened to populate a resource.
             // ---------------------------------------------------------------
             if (bridge->RVRGetFrameDesc) {
+                static uint32_t s_lastFrameDescProxyCounter = 0xFFFFFFFFu;
                 void** sceneResSlot = (void**)(base - 0x1948); // abs 0x36BDC8
-                if (*sceneResSlot != nullptr) {
+                RVR_SampleProxyGate(base);
+                void* sceneBefore = *sceneResSlot;
+                if (sceneBefore == nullptr) ++g_frameDescNoScene;
+
+                // The original ASI calls RVRGetFrameDesc roughly once per
+                // proxy frame. Calling it from every ViewInverse invocation
+                // consumes/clears the transient scene slot far too often and
+                // recreates the observed flicker/freeze pattern.
+                if (s_lastFrameDescProxyCounter != proxyCounter) {
+                    s_lastFrameDescProxyCounter = proxyCounter;
                     static char s_descOut[256];
-                    bridge->RVRGetFrameDesc(proxyCounter, s_descOut);
+                    ++g_frameDescCalls;
+                    __try {
+                        uint32_t descCounter = RVR_FORCE_MONO_FRAMEDESC ? (currentFrame | 1u) : currentFrame;
+                        *(volatile uint32_t*)(base + 0x3C) = descCounter;
+                        int rc = bridge->RVRGetFrameDesc(descCounter, s_descOut);
+                        static uint32_t s_logBudget = 0;
+                        if ((s_logBudget++ & 0x3F) == 0 || sceneBefore != nullptr) {
+                            uint8_t i10 = *(volatile uint8_t*)(base + 0x10);
+                            uint8_t i11 = *(volatile uint8_t*)(base + 0x11);
+                            void* mgr = *(void**)(base + 0x8);
+                            void* sceneAfter = *(void**)(base - 0x1948);
+                            RVR_LOG("[RT] GetFrameDesc rc=%d proxyCtr=%u current=%u descCtr=%u eye=%u [34]=%u [3C]=%u i10=%u i11=%u mgr=%p scene_before=%p scene_after=%p",
+                                    rc, proxyCounter, currentFrame, descCounter, descCounter & 1u,
+                                    *(volatile uint32_t*)(base + 0x34),
+                                    *(volatile uint32_t*)(base + 0x3C),
+                                    i10, i11, mgr, sceneBefore, sceneAfter);
+                        }
+                    } __except(EXCEPTION_EXECUTE_HANDLER) {
+                        ++g_frameDescErrors;
+                    }
                 }
             }
 

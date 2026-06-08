@@ -111,7 +111,12 @@ extern "C" RVRPoseSlot* RVR_GetPoseRing();
 extern "C" int          RVR_GetPoseCount();
 extern "C" void         RVR_ClearPoseRing();
 extern "C" void         RVR_AdjustViewInverse(RVRMatrix44*,RVRBridge*,uint32_t,float,bool,int);
-extern "C" volatile long g_e0SeenCount, g_sceneSeenCount, g_aviCallCount;
+extern "C" volatile long g_e0SeenCount, g_i10SeenCount, g_i11SeenCount, g_sceneSeenCount;
+extern "C" volatile long g_managerSeenCount, g_frameDescCalls, g_frameDescNoScene;
+extern "C" volatile long g_df50SeenCount, g_d789SeenCount;
+extern "C" volatile long g_frameDescErrors, g_managerGateTrue, g_managerGateFalse;
+extern "C" volatile long g_managerGateErrors, g_aviCallCount;
+extern "C" volatile long g_captureArmCount, g_captureArmSkipped;
 extern "C" void         RVR_TrackProj(RVRBridge*,float,float,float,float,float,float,float);
 void InitHandlers(const GamePointers& gp);
 bool RVR_CheckGameVersion(RVRBridge&);
@@ -390,6 +395,17 @@ static void RVR_TrackingTick() {
 
     const uint32_t vrState = *(const uint32_t*)g_bridge.g_RVRData;
     if (vrState == 0) return;
+
+    // Original proxy capture writers require g_RVRData[0x10] (0x36D720) and
+    // the rest of the ASI state machine keeps it in sync with [0x11]. Our
+    // reconstruction must keep both asserted while VR is active.
+    if (g_bridge.g_RVRData) {
+        RVR_TRY {
+            uint8_t* b = (uint8_t*)g_bridge.g_RVRData;
+            b[0x10] = 1;
+            b[0x11] = 1;
+        } RVR_EXCEPT(EXCEPTION_EXECUTE_HANDLER) {}
+    }
 
     // Guard: wait until the player ped is loaded before calling any natives.
     // During the loading screen PLAYER_PED_ID() returns an invalid entity.
@@ -700,22 +716,49 @@ static void RVR_TrackingTick() {
             //   capture is SKIPPED unless ALL of these are non-zero:
             //   g_RVRData[0xE0] (enable), g_RVRData[0x11] (init), g_RVRData[0xC0] (resource ptr).
             //   Also log the captured-scene resource [0x36BDC8] = g_RVRData-0x1948.
-            unsigned e0 = 0, i11 = 0; void* c0 = nullptr; void* scene = nullptr;
+            unsigned e0 = 0, i10 = 0, i11 = 0, df50 = 0, d789 = 0; void* c0 = nullptr; void* scene = nullptr;
+            void* mgr = nullptr; void* mgrVtbl = nullptr; void* mgrGate = nullptr;
             if (g_bridge.g_RVRData) {
-                const uint8_t* b = (const uint8_t*)g_bridge.g_RVRData;
-                fidx34 = *(const uint32_t*)(b + 0x34);
-                fidx3c = *(const uint32_t*)(b + 0x3C);
-                e0   = *(const uint8_t*)(b + 0xE0);
-                i11  = *(const uint8_t*)(b + 0x11);
-                c0   = *(void* const*)(b + 0xC0);
-                scene= *(void* const*)(b - 0x1948);
+                RVR_TRY {
+                    const uint8_t* b = (const uint8_t*)g_bridge.g_RVRData;
+                    fidx34 = *(const uint32_t*)(b + 0x34);
+                    fidx3c = *(const uint32_t*)(b + 0x3C);
+                    e0   = *(const uint8_t*)(b + 0xE0);
+                    i10  = *(const uint8_t*)(b + 0x10);
+                    i11  = *(const uint8_t*)(b + 0x11);
+                    df50 = *(const uint8_t*)(b + 0x840);
+                    d789 = *(const uint8_t*)(b + 0x79);
+                    c0   = *(void* const*)(b + 0xC0);
+                    scene= *(void* const*)(b - 0x1948);
+                    mgr  = *(void* const*)(b + 0x8);
+                    if (mgr) {
+                        mgrVtbl = *(void* const*)mgr;
+                        if (mgrVtbl) mgrGate = *(((void**)mgrVtbl) + 7); // vtable + 0x38
+                    }
+                } RVR_EXCEPT(EXCEPTION_EXECUTE_HANDLER) {}
             }
             // Dense render-thread capture-gate counters (read+reset).
-            long e0Seen    = g_e0SeenCount;    g_e0SeenCount = 0;
-            long sceneSeen = g_sceneSeenCount; g_sceneSeenCount = 0;
-            long aviCalls  = g_aviCallCount;   g_aviCallCount = 0;
-            RVR_LOG("[ST] HEARTBEAT: VI/2s=%ld | [0x34]=%u [0x3C]=%u | i11=%u c0=%p | DENSE: avi=%ld e0Seen=%ld sceneSeen=%ld | scene_now=%p e0_now=%u",
-                    (viNow - s_lastVI), fidx34, fidx3c, i11, c0, aviCalls, e0Seen, sceneSeen, scene, e0);
+            long e0Seen   = g_e0SeenCount;      g_e0SeenCount = 0;
+            long i10Seen  = g_i10SeenCount;     g_i10SeenCount = 0;
+            long i11Seen  = g_i11SeenCount;     g_i11SeenCount = 0;
+            long mgrSeen  = g_managerSeenCount; g_managerSeenCount = 0;
+            long df50Seen = g_df50SeenCount;    g_df50SeenCount = 0;
+            long d789Seen = g_d789SeenCount;    g_d789SeenCount = 0;
+            long sceneSeen= g_sceneSeenCount;   g_sceneSeenCount = 0;
+            long fdCalls  = g_frameDescCalls;   g_frameDescCalls = 0;
+            long fdNoScn  = g_frameDescNoScene; g_frameDescNoScene = 0;
+            long fdErr    = g_frameDescErrors;  g_frameDescErrors = 0;
+            long gateT    = g_managerGateTrue;  g_managerGateTrue = 0;
+            long gateF    = g_managerGateFalse; g_managerGateFalse = 0;
+            long gateErr  = g_managerGateErrors; g_managerGateErrors = 0;
+            long arm      = g_captureArmCount;  g_captureArmCount = 0;
+            long armSkip  = g_captureArmSkipped; g_captureArmSkipped = 0;
+            long aviCalls = g_aviCallCount;     g_aviCallCount = 0;
+            RVR_LOG("[ST] HEARTBEAT: VI/2s=%ld | [34]=%u [3C]=%u | now:e0=%u i10=%u i11=%u df50=%u d789=%u c0=%p scene=%p mgr=%p gate=%p | dense:avi=%ld e0=%ld i10=%ld i11=%ld df50=%ld d789=%ld mgr=%ld scene=%ld fd=%ld noScene=%ld fdErr=%ld arm=%ld armSkip=%ld gateT/F/E=%ld/%ld/%ld",
+                    (viNow - s_lastVI), fidx34, fidx3c,
+                    e0, i10, i11, df50, d789, c0, scene, mgr, mgrGate,
+                    aviCalls, e0Seen, i10Seen, i11Seen, df50Seen, d789Seen, mgrSeen, sceneSeen,
+                    fdCalls, fdNoScn, fdErr, arm, armSkip, gateT, gateF, gateErr);
             
             s_lastVI = viNow;
             s_tickCount = 0;

@@ -63,11 +63,13 @@
 //   [slot * 0x1C + 0x77C + 0x08] = float  hmd roll    (radians)
 //   [slot * 0x1C + 0x77C + 0x0C] = float  head offset (meters, X axis)
 //
-// View matrix output (written by AdjustViewInverse for the render thread):
-//   stride = 256 bytes per slot
+// View/projection output (written by AdjustViewInverse for the render thread):
+//   stride = 64 bytes per slot (confirmed from original ASI: shl r9, 6)
 //   slot   = frameIndex & 3
-//   [slot * 256 + 0x890] = float[16]  row-major view matrix
-//   [slot * 256 + 0x910] = float[16]  column-major (transposed) for HLSL shaders
+//   [slot * 64 + 0x890] = float[16]  eye view matrix
+//   [slot * 64 + 0x910] = float[16]  projection source copy
+//   [slot * 64 + 0x990] = float[16]  opposite-eye view matrix
+//   [slot * 64 + 0xA10] = float[16]  projection copy read by proxy
 //
 // STATUS
 // ------

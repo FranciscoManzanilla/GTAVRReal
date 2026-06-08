@@ -5,6 +5,10 @@
 #include <Psapi.h>
 #include "main.h"
 
+#ifndef RVR_PATCH_PROXY_CAPTURE_HASH_GATE
+#define RVR_PATCH_PROXY_CAPTURE_HASH_GATE 1
+#endif
+
 // =============================================================================
 // RVRBridge.cpp
 //
@@ -96,6 +100,65 @@ static HMODULE FindRVRModule() {
     return result;
 }
 
+static void TryPatchProxyCaptureHashGate(HMODULE h) {
+#if RVR_PATCH_PROXY_CAPTURE_HASH_GATE
+    // Proxy r7 capture shader gate:
+    //   RVA 0x8614D: cmp byte ptr [DF50],0
+    //   RVA 0x86154: je  0x86172
+    //   RVA 0x86156: cmp byte ptr [D7F0],0
+    //   RVA 0x8615F: cmp hash, 0x7626678814BA7B9F
+    //   RVA 0x8616C: jne 0x86172
+    //
+    // In this GTA V build the world pass does not reliably arm DF50 nor match
+    // the baked hash. Keep D7F0 alive so the proxy can still suppress recursive
+    // capture/end-phase passes; this is narrower than bypassing the final
+    // bl/r13 gate at 0x8618F, which made the world appear but hid the UI.
+    //
+    // Keep the scene resource publisher's target checks intact. The original
+    // ASI leaves those checks enabled; bypassing them can publish non-world
+    // passes often enough to cause flicker or eye mismatch.
+    struct Patch {
+        uint32_t rva;
+        uint8_t expected[2];
+        const char* name;
+    };
+    const Patch patches[] = {
+        { 0x86154, { 0x74, 0x1C }, "DF50 skip" },
+        { 0x8616C, { 0x75, 0x04 }, "hash mismatch" },
+    };
+    const uint8_t nops[2] = { 0x90, 0x90 };
+
+    for (const Patch& patchInfo : patches) {
+        uint8_t* p = (uint8_t*)h + patchInfo.rva;
+        if (memcmp(p, nops, sizeof(nops)) == 0) {
+            RVR_LOG("Proxy capture %s gate already patched at %p (RVA 0x%X)",
+                    patchInfo.name, p, patchInfo.rva);
+            continue;
+        }
+        if (memcmp(p, patchInfo.expected, sizeof(patchInfo.expected)) != 0) {
+            RVR_LOG("Proxy capture %s gate patch skipped: unexpected bytes at %p: %02X %02X",
+                    patchInfo.name, p, p[0], p[1]);
+            continue;
+        }
+
+        DWORD old = 0;
+        if (!VirtualProtect(p, sizeof(nops), PAGE_EXECUTE_READWRITE, &old)) {
+            RVR_LOG("Proxy capture %s gate patch failed: VirtualProtect error %lu",
+                    patchInfo.name, GetLastError());
+            continue;
+        }
+
+        memcpy(p, nops, sizeof(nops));
+        FlushInstructionCache(GetCurrentProcess(), p, sizeof(nops));
+        VirtualProtect(p, sizeof(nops), old, &old);
+        RVR_LOG("Proxy capture %s gate patched at %p (RVA 0x%X)",
+                patchInfo.name, p, patchInfo.rva);
+    }
+#else
+    (void)h;
+#endif
+}
+
 bool RVRBridge::Resolve(bool verbose) {
 #define BLOG(...) do { if (verbose) RVR_LOG(__VA_ARGS__); } while(0)
     BLOG("--- Resolving bridge with d3d11.dll ---");
@@ -137,6 +200,7 @@ bool RVRBridge::Resolve(bool verbose) {
         BLOG("  RESULT: missing required symbols.");
         return false;
     }
+    TryPatchProxyCaptureHashGate(h);
     BLOG("  RESULT: bridge RESOLVED OK");
 #undef BLOG
     return true;
