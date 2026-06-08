@@ -111,6 +111,7 @@ extern "C" RVRPoseSlot* RVR_GetPoseRing();
 extern "C" int          RVR_GetPoseCount();
 extern "C" void         RVR_ClearPoseRing();
 extern "C" void         RVR_AdjustViewInverse(RVRMatrix44*,RVRBridge*,uint32_t,float,bool,int);
+extern "C" volatile long g_e0SeenCount, g_sceneSeenCount, g_aviCallCount;
 extern "C" void         RVR_TrackProj(RVRBridge*,float,float,float,float,float,float,float);
 void InitHandlers(const GamePointers& gp);
 bool RVR_CheckGameVersion(RVRBridge&);
@@ -148,6 +149,11 @@ extern "C" volatile long g_viewInverseCalls;  // defined in RVRHandlersCpp.cpp
 // to this captured orientation. Cleared on F11 so the next frame re-captures it.
 static float g_hmdQuatRef[4] = {0.f, 0.f, 0.f, 1.f};
 static bool  g_hmdRefSet     = false;
+
+// Head yaw/pitch in degrees (from the relative HMD quaternion), used to drive
+// the GAME camera via natives so the world rotates with the head.
+static float g_headYawDeg   = 0.f;
+static float g_headPitchDeg = 0.f;
 
 static HMODULE g_hModule        = nullptr;
 static bool    g_patchesApplied = false;
@@ -450,23 +456,21 @@ static void RVR_TrackingTick() {
         // The missing outDesc arg was the crash cause (it wrote to a garbage rdx).
         static uint8_t s_poseBuf[4096];
         static uint8_t s_poseDescOut[4096];
-        static uint8_t s_frameDescOut[4096];
         RVR_TRACE_ONCE("[ST] 3b: before RVRSeqCheck (2-arg)");
         RVR_TRY {
             memcpy(s_poseBuf, posePtr, 0x20);  // it reads up to +0x1B
             if (g_bridge.RVRSeqCheck)
                 g_bridge.RVRSeqCheck(s_poseBuf, s_poseDescOut);
-            RVR_TRACE_ONCE("[ST] 3b: after RVRSeqCheck / before RVRGetFrameDesc");
+            RVR_TRACE_ONCE("[ST] 3b: after RVRSeqCheck (pose processed)");
 
-            // RVRGetFrameDesc with the proxy's own frame index + 1 (matches the
-            // original). Forcing the eye bit (AER alternation) ourselves broke the
-            // proxy's frame sync, so we let the proxy drive the frame index.
-            if (g_bridge.RVRGetFrameDesc && g_bridge.g_RVRData) {
-                uint32_t fc = *(const uint32_t*)
-                    ((const uint8_t*)g_bridge.g_RVRData + 0x34) + 1u;
-                g_bridge.RVRGetFrameDesc(fc, s_frameDescOut);
-            }
-            RVR_TRACE_ONCE("[ST] 3b: handshake complete OK");
+            // NOTE: RVRGetFrameDesc (the per-frame SUBMIT/consume) is NO LONGER
+            // called here. It was moved to the render thread (RVR_AdjustViewInverse,
+            // ViewInverse hook), where it runs in lockstep with the proxy's scene
+            // capture. Calling it from this script-thread loop raced the render
+            // thread and consumed/cleared the captured-scene resource out of sync,
+            // which froze the image (1 random frame, updating only on pause).
+            // See AdjustViewInverse.cpp "RENDER-THREAD SUBMIT (freeze fix)".
+            RVR_TRACE_ONCE("[ST] 3b: pose handshake complete OK (submit on render thread)");
         } RVR_EXCEPT(EXCEPTION_EXECUTE_HANDLER) {
             RVR_TRACE_ONCE("[ST] 3b: EXCEPTION in handshake (suppressed)");
         }
@@ -507,9 +511,17 @@ static void RVR_TrackingTick() {
             float dw = rw*qw - rx*qx - ry*qy - rz*qz;
             g_hmdQuat[0]=dx; g_hmdQuat[1]=dy; g_hmdQuat[2]=dz; g_hmdQuat[3]=dw;
 
+            // Head yaw/pitch from the delta quaternion's forward vector
+            // (OpenVR: forward = -Z rotated). Used to drive the game camera.
+            float fX = -2.f*(dx*dz + dw*dy);
+            float fY = -2.f*(dy*dz - dw*dx);
+            float fZ = -(1.f - 2.f*(dx*dx + dy*dy));
+            // Invert the yaw to match the game engine's rotation direction
+            g_headYawDeg   = -atan2f(fX, -fZ) * 57.2957795f;
+            g_headPitchDeg = asinf(fmaxf(-1.f, fminf(1.f, fY))) * 57.2957795f;
+
             g_hmdPos[0]=local[4]; g_hmdPos[1]=local[5]; g_hmdPos[2]=local[6];
-            RVR_TRACE_ONCE("[ST] HMD delta quat: %.3f %.3f %.3f %.3f",
-                           g_hmdQuat[0], g_hmdQuat[1], g_hmdQuat[2], g_hmdQuat[3]);
+            RVR_TRACE_ONCE("[ST] HMD head yaw=%.1f pitch=%.1f", g_headYawDeg, g_headPitchDeg);
 
             // RE finding: the original writes the HMD quaternion to g_RVRData+0x77C
             // (16 bytes), inside a 0x38-byte pose struct (0x77C..0x7B3). The next
@@ -549,33 +561,67 @@ static void RVR_TrackingTick() {
 
     // Step 6: read processed pose from ring-buffer (written by render thread)
     RVR_TRACE_ONCE("[ST] Tick step 6: read pose ring (count=%d)", RVR_GetPoseCount());
-    if (RVR_GetPoseCount() > 0) {
-        const RVRPoseSlot& ps = RVR_GetPoseRing()[0];
-
-        float hmdYaw   =  atan2f(ps.row0[2], ps.row2[2]) * 57.2957795f;
-        float hmdPitch = -asinf(fmaxf(-1.f, fminf(1.f, ps.row1[2]))) * 57.2957795f;
-
-        // Step 7: apply to gameplay camera.
-        // Flight missions disable heading control (aircraft instruments are fixed).
-        bool applyHeading = false;
-        if (!flightMode) {
-            switch (g_config.headingControl) {
-                case 0: applyHeading = true; break;
-                case 1: applyHeading = RVRNat::IsAimCamActive() ||
-                                       RVRNat::IsPedAimingFromCover(RVRNat::PlayerPed()); break;
-                case 2: applyHeading = false; break;
+    {
+        // Step 7: drive the GAME camera with the head yaw/pitch so the world
+        // rotates with the head (1st and 3rd person). Uses relative heading/pitch
+        // (relative to the player body), which works for both camera modes.
+        // g_htMode (key 'K') cycles the sign convention to dial in the correct
+        // direction (head right -> view right, head up -> view up).
+        bool applyHeading = g_headTrackOn && !flightMode && !inCutscene;
+        if (g_config.headingControl == 2) applyHeading = false;
+        if (applyHeading) {
+            float yaw   = g_headYawDeg;
+            float pitch = g_headPitchDeg;
+            switch (g_htMode) {
+                default:
+                case 0: break;                       // yaw+, pitch+
+                case 1: yaw = -yaw;            break; // yaw-, pitch+
+                case 2: pitch = -pitch;       break; // yaw+, pitch-
+                case 3: yaw = -yaw; pitch = -pitch; break; // both -
             }
-        }
-        if (applyHeading && !inCutscene) {
-            RVR_TRACE_ONCE("[ST] Tick step 7: SetGameplayCamRawYaw/Pitch");
-            RVRNat::SetGameplayCamRawYaw(hmdYaw);
-            if (g_config.pitchControl)
-                RVRNat::SetGameplayCamRawPitch(hmdPitch);
+            RVR_TRACE_ONCE("[ST] Tick step 7: drive cam heading=%.1f pitch=%.1f (mode %d)",
+                           yaw, pitch, g_htMode);
+
+            const bool is1stPerson = RVRNat::IsFirstPersonView();
+            if (is1stPerson) {
+                // In 1st person the ped body rotates to match the camera every frame.
+                // Sending the absolute HMD yaw as a relative offset causes runaway
+                // spin because each tick it adds on top of the body rotation.
+                // Fix: send the per-frame DELTA so only the actual head movement
+                // is applied, and apply it directly to the absolute camera yaw
+                // so we don't fight the ped's relative rotation.
+                static float s_prevHmdYaw   = 0.f;
+                static float s_prevHmdPitch = 0.f;
+                float deltaYaw = yaw - s_prevHmdYaw;
+                float deltaPitch = pitch - s_prevHmdPitch;
+                // Wrap delta to [-180, 180] to handle 360->0 wrap-around
+                if (deltaYaw   >  180.f) deltaYaw   -= 360.f;
+                if (deltaYaw   < -180.f) deltaYaw   += 360.f;
+                if (deltaPitch >  180.f) deltaPitch -= 360.f;
+                if (deltaPitch < -180.f) deltaPitch += 360.f;
+                s_prevHmdYaw   = yaw;
+                s_prevHmdPitch = pitch;
+                
+                // Get current relative heading and add delta
+                float currentRelYaw = RVRNat::GetGameplayCamRelativeHeading();
+                RVRNat::SetGameplayCamRelativeHeading(currentRelYaw + deltaYaw);
+                
+                if (g_config.pitchControl) {
+                    float currentRelPitch = RVRNat::GetGameplayCamRelativePitch();
+                    RVRNat::SetGameplayCamRelativePitch(currentRelPitch + deltaPitch);
+                }
+            } else {
+                // 3rd person / cutscene: send the absolute HMD yaw as a relative
+                // offset from the player body. The body does NOT auto-rotate in
+                // 3rd person, so there is no feedback loop.
+                RVRNat::SetGameplayCamRelativeHeading(yaw);
+                if (g_config.pitchControl)
+                    RVRNat::SetGameplayCamRelativePitch(pitch);
+            }
         }
 
         if (g_config.showDebugText && g_bridge.RVRLog)
-            g_bridge.RVRLog("GAMEPLAY_CAM_ROT yaw = %.2f, pitch = %.2f, roll = %.2f\n",
-                hmdYaw, hmdPitch, 0.f);
+            g_bridge.RVRLog("HEAD yaw = %.2f, pitch = %.2f\n", g_headYawDeg, g_headPitchDeg);
     }
 
     // Step 8: update HMD projection matrix.
@@ -603,9 +649,18 @@ static void RVR_TrackingTick() {
 
     if (!suppressFOV && g_config.universalFOVFix > 0) {
         float gameFov  = RVRNat::GetGameplayCamFov();
-        float tanHalf  = tanf(gameFov * 0.5f * 3.14159265f / 180.f);
-        RVR_TrackProj(&g_bridge, 1.f / tanHalf,
-            -tanHalf, tanHalf, -tanHalf, tanHalf, 0.05f, 10000.f);
+        float zoom = 1.f / tanf(gameFov * 0.5f * 3.14159265f / 180.f);
+
+        // Use symmetric FOV unconditionally. We suspected s_frameDescOut might
+        // contain asymmetric tangents, but reading garbage here corrupts the
+        // projection matrix with NaNs, causing the VR render to fail completely.
+        float tanHalf  = tanf(g_config.hmdFovDeg * 0.5f * 3.14159265f / 180.f);
+        float left   = -tanHalf;
+        float right  =  tanHalf;
+        float top    = -tanHalf;
+        float bottom =  tanHalf;
+
+        RVR_TrackProj(&g_bridge, zoom, left, right, top, bottom, 0.05f, 10000.f);
     }
 
     // StereoInCutscenes mode 2: do not fold world rotation into the render pose
@@ -640,8 +695,28 @@ static void RVR_TrackingTick() {
         if (now - s_lastBeat >= 2000) {
             static long s_lastVI = 0;
             long viNow = g_viewInverseCalls;
-            RVR_LOG("[ST] HEARTBEAT: %u script ticks, %ld ViewInverse(render) in %llu ms (flag=0x%02X)",
-                    s_tickCount, (viNow - s_lastVI), (now - s_lastBeat), g_frameBeginFlag);
+            uint32_t fidx34 = 0, fidx3c = 0;
+            // Proxy scene-capture gate flags (RE of d3d11.dll capture func 0x879C0):
+            //   capture is SKIPPED unless ALL of these are non-zero:
+            //   g_RVRData[0xE0] (enable), g_RVRData[0x11] (init), g_RVRData[0xC0] (resource ptr).
+            //   Also log the captured-scene resource [0x36BDC8] = g_RVRData-0x1948.
+            unsigned e0 = 0, i11 = 0; void* c0 = nullptr; void* scene = nullptr;
+            if (g_bridge.g_RVRData) {
+                const uint8_t* b = (const uint8_t*)g_bridge.g_RVRData;
+                fidx34 = *(const uint32_t*)(b + 0x34);
+                fidx3c = *(const uint32_t*)(b + 0x3C);
+                e0   = *(const uint8_t*)(b + 0xE0);
+                i11  = *(const uint8_t*)(b + 0x11);
+                c0   = *(void* const*)(b + 0xC0);
+                scene= *(void* const*)(b - 0x1948);
+            }
+            // Dense render-thread capture-gate counters (read+reset).
+            long e0Seen    = g_e0SeenCount;    g_e0SeenCount = 0;
+            long sceneSeen = g_sceneSeenCount; g_sceneSeenCount = 0;
+            long aviCalls  = g_aviCallCount;   g_aviCallCount = 0;
+            RVR_LOG("[ST] HEARTBEAT: VI/2s=%ld | [0x34]=%u [0x3C]=%u | i11=%u c0=%p | DENSE: avi=%ld e0Seen=%ld sceneSeen=%ld | scene_now=%p e0_now=%u",
+                    (viNow - s_lastVI), fidx34, fidx3c, i11, c0, aviCalls, e0Seen, sceneSeen, scene, e0);
+            
             s_lastVI = viNow;
             s_tickCount = 0;
             s_lastBeat = now;
@@ -716,8 +791,8 @@ static void OnKeyboard(DWORD key, WORD, BYTE, BOOL, BOOL, BOOL, BOOL isUpNow) {
         RVR_LOG("HeadTracking = %s", g_headTrackOn ? "ON" : "OFF");
         break;
     case 'K':
-        g_htMode = (g_htMode + 1) % 6;
-        RVR_LOG("HeadTrack convention mode = %d", g_htMode);
+        g_htMode = (g_htMode + 1) % 4;
+        RVR_LOG("HeadTrack sign mode = %d (0:y+p+ 1:y-p+ 2:y+p- 3:y-p-)", g_htMode);
         break;
     case 'Y':
         g_config.headingControl = (g_config.headingControl + 1) % 3;
@@ -745,7 +820,7 @@ BOOL APIENTRY DllMain(HMODULE hInstance, DWORD reason, LPVOID) {
         g_hModule = hInstance;
         DisableThreadLibraryCalls(hInstance);
         RVRFileLog::Init();
-        RVR_LOG("ASI loaded (DLL_PROCESS_ATTACH) -- BUILD: best-v19 (" __DATE__ " " __TIME__ ")");
+        RVR_LOG("ASI loaded (DLL_PROCESS_ATTACH) -- BUILD: revert-e0-v30 (" __DATE__ " " __TIME__ ")");
         scriptRegister(hInstance, ScriptMain);
         keyboardHandlerRegister(OnKeyboard);
         break;

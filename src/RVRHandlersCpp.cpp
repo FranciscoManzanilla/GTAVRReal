@@ -48,7 +48,7 @@
 //
 // WHAT IS NOT YET FULLY IMPLEMENTED
 // -----------------------------------
-// CamParamsHandler: the near/far plane override for VR comfort. The offset
+// CamParamsHandler: the near/far plane override for VR comfort. The offsets
 //   of near/far within pCamParams is not confirmed. The handler is a no-op.
 //
 // FOV handlers use g_fRVRGameProj[0] as the HMD FOV source. This value is
@@ -179,18 +179,28 @@ extern "C" void RVR_ViewInverseC(void* camObj) {
         const uint32_t vrState = *(const uint32_t*)g_bridge.g_RVRData;
         if (vrState == 0) return;
 
-        // The engine writes the view matrix at this site ~27x per frame (one
-        // per render camera: shadows, reflections, water, mirrors, main view).
-        // Feeding all of them to the proxy makes it reproject with the wrong
-        // camera -> frozen/garbage image. Filter to the MAIN gameplay camera
-        // by its FOV (camObj+0x70). Shadow/reflection passes use very different
-        // FOV/near/far values; the gameplay camera is roughly 20-75 degrees.
+        // Gate: only process the MAIN gameplay camera.
+        // We log the FOV to see what values the game engine actually provides.
         float camFov = *(const float*)((const uint8_t*)camObj + 0x70);
-        RVR_TRACE_ONCE("[RT] first camObj FOV=%.2f", camFov);
-        if (!(camFov >= 20.f && camFov <= 75.f))
-            return;  // skip non-gameplay camera passes
+        
+        static int s_fovLogCount = 0;
+        if (s_fovLogCount < 100) {
+            s_fovLogCount++;
+            RVR_LOG("[RT] camObj FOV=%.2f, [0x34]=%u, [0x3C]=%u", 
+                camFov, 
+                *(volatile uint32_t*)((uint8_t*)g_bridge.g_RVRData + 0x34),
+                *(volatile uint32_t*)((uint8_t*)g_bridge.g_RVRData + 0x3C));
+        }
 
-        g_viewInverseCalls++;  // count only ACCEPTED (main-camera) passes
+        // Temporarily accept ALL cameras (no filter) so we can see the image
+        // (even if it's shadows/borders) and confirm the pipeline is active.
+        // If camFov is in radians (e.g., ~0.8), then [20.f, 75.f] was filtering
+        // out the main camera entirely!
+        if (!(camFov >= 20.f && camFov <= 75.f)) {
+            // return; // TEMPORARILY DISABLED: we want to see if this was the culprit!
+        }
+
+        g_viewInverseCalls++;
 
         RVR_TRACE_ONCE("[RT] ViewInverse: reading view matrix");
         RVRMatrix44 view{};
@@ -234,6 +244,7 @@ extern "C" void RVR_ProjC(void* projObj) {
         float tanHalf = tanf(g_config.hmdFovDeg * 0.5f * 3.14159265f / 180.f);
         RVR_TrackProj(&g_bridge, zoom,
             -tanHalf, tanHalf, -tanHalf, tanHalf, nearP, farP);
+            
         RVR_TRACE_ONCE("[RT] RVR_ProjC FIRST EXIT OK");
     } __except(EXCEPTION_EXECUTE_HANDLER) {
         static bool once = false;
@@ -247,64 +258,64 @@ extern "C" void RVR_ProjC(void* projObj) {
 // Replaces the engine's FOV with the HMD's effective FOV if UniversalFOVFix
 // is active. Writes directly to the FOV field at pCamObj + 0x43.
 // ----------------------------------------------------------------------------
-extern "C" void RVR_FOV1stCarC(void* camObj, float /*engineFov*/) {
-    RVR_TRACE_ONCE("[RT] RVR_FOV1stCarC FIRST ENTER (camObj=%p)", camObj);
-    if (!camObj || !g_bridge.IsReady()) return;
-    if (g_config.universalFOVFix == 0 || !g_bridge.g_fRVRGameProj) return;
-    __try {
-        float cot = g_bridge.g_fRVRGameProj[0];
-        if (cot < 0.1f) return;
-        *(float*)((uint8_t*)camObj + 0x43) = 2.f * atanf(1.f / cot) * 57.2957795f;
-        RVR_TRACE_ONCE("[RT] RVR_FOV1stCarC FIRST EXIT OK");
-    } __except(EXCEPTION_EXECUTE_HANDLER) {
-        RVR_TRACE_ONCE("[RT] EXCEPTION in RVR_FOV1stCarC (suppressed)");
-    }
+// FOV handlers now RETURN the FOV that the engine should write. The ASM stub
+// puts the returned value into the register the original instruction stores
+// (xmm0 for FOV1stCar/FOV3rd, xmm8 for FOVUni), so the continuation writes OUR
+// wide VR FOV instead of the engine's narrow one. Writing to memory directly
+// did NOT work because the continuation re-runs the original store and
+// overwrites it. Returning engineFov unchanged = leave the FOV as-is.
+static inline float RVR_VRFov(float engineFov) {
+    // Widen to the headset FOV so the proxy has enough image for stereo.
+    float f = g_config.hmdFovDeg;          // e.g. 100 degrees
+    if (f < 1.f)   f = 1.f;
+    if (f > 130.f) f = 130.f;
+    return f > 0.f ? f : engineFov;
 }
 
-extern "C" void RVR_FOV3rdC(void* camObj, float /*engineFov*/) {
-    RVR_TRACE_ONCE("[RT] RVR_FOV3rdC FIRST ENTER (camObj=%p)", camObj);
-    if (!camObj || !g_bridge.IsReady()) return;
-    if (g_config.universalFOVFix == 0 || !g_bridge.g_fRVRGameProj) return;
-    __try {
-        float cot = g_bridge.g_fRVRGameProj[0];
-        if (cot < 0.1f) return;
-        *(float*)((uint8_t*)camObj + 0x90) = 2.f * atanf(1.f / cot) * 57.2957795f;
-        RVR_TRACE_ONCE("[RT] RVR_FOV3rdC FIRST EXIT OK");
-    } __except(EXCEPTION_EXECUTE_HANDLER) {
-        RVR_TRACE_ONCE("[RT] EXCEPTION in RVR_FOV3rdC (suppressed)");
-    }
+extern "C" float RVR_FOV1stCarC(void* camObj, float engineFov) {
+    RVR_TRACE_ONCE("[RT] RVR_FOV1stCarC FIRST ENTER (camObj=%p eng=%.1f)", camObj, engineFov);
+    if (!camObj || !g_bridge.IsReady() || g_config.universalFOVFix == 0) return engineFov;
+    float f = RVR_VRFov(engineFov);
+    RVR_TRACE_ONCE("[RT] RVR_FOV1stCarC -> %.1f", f);
+    return f;
 }
 
-extern "C" void RVR_FOVUniC(void* camObj, float /*engineFov*/) {
-    RVR_TRACE_ONCE("[RT] RVR_FOVUniC FIRST ENTER (camObj=%p)", camObj);
-    if (!camObj || !g_bridge.IsReady()) return;
-    if (g_config.universalFOVFix == 0 || !g_bridge.g_fRVRGameProj) return;
+extern "C" float RVR_FOV3rdC(void* camObj, float engineFov) {
+    RVR_TRACE_ONCE("[RT] RVR_FOV3rdC FIRST ENTER (camObj=%p eng=%.1f)", camObj, engineFov);
+    if (!camObj || !g_bridge.IsReady() || g_config.universalFOVFix == 0) return engineFov;
+    float f = RVR_VRFov(engineFov);
+    RVR_TRACE_ONCE("[RT] RVR_FOV3rdC -> %.1f", f);
+    return f;
+}
+
+extern "C" float RVR_FOVUniC(void* camObj, float engineFov) {
+    RVR_TRACE_ONCE("[RT] RVR_FOVUniC FIRST ENTER (camObj=%p eng=%.1f)", camObj, engineFov);
+    if (!camObj || !g_bridge.IsReady() || g_config.universalFOVFix == 0) return engineFov;
     bool apply = false;
     switch (g_config.universalFOVFix) {
         case 1: apply = (g_cachedCamType == CT_CUTSCENE); break;
         case 2: apply = (g_cachedCamType != CT_CUTSCENE); break;
         case 3: apply = true; break;
     }
-    if (!apply) return;
-    __try {
-        float cot = g_bridge.g_fRVRGameProj[0];
-        if (cot < 0.1f) return;
-        *(float*)((uint8_t*)camObj + 0x90) = 2.f * atanf(1.f / cot) * 57.2957795f;
-        RVR_TRACE_ONCE("[RT] RVR_FOVUniC FIRST EXIT OK");
-    } __except(EXCEPTION_EXECUTE_HANDLER) {
-        RVR_TRACE_ONCE("[RT] EXCEPTION in RVR_FOVUniC (suppressed)");
-    }
+    if (!apply) return engineFov;
+    float f = RVR_VRFov(engineFov);
+    RVR_TRACE_ONCE("[RT] RVR_FOVUniC -> %.1f", f);
+    return f;
 }
 
 // ----------------------------------------------------------------------------
-// RVR_CamParamsC
+// === CamParams Handler (near/far plane override) ===
 // Intercepts the camera parameter setup function.
 // Currently a no-op. Intended use: adjust the near plane to prevent clipping
 // during HMD head translation. The near plane offset within pCamParams has
 // not been confirmed and requires additional RE.
 // ----------------------------------------------------------------------------
 extern "C" void RVR_CamParamsC(void* camParams, void* camData) {
-    RVR_TRACE_ONCE("[RT] RVR_CamParamsC FIRST ENTER (camParams=%p camData=%p)",
-                   camParams, camData);
-    // Not yet implemented. Continuation runs the original function.
+    RVR_TRACE_ONCE("[RT] RVR_CamParamsC FIRST ENTER (camParams=%p camData=%p)", camParams, camData);
+    if (!camParams || !g_bridge.IsReady()) return;
+    // Placeholder: read near/far from camParams (offsets TBD) and log them.
+    // In the original ASI the offsets are not yet confirmed; we simply log the pointer.
+    RVR_LOG("CamParamsC: camParams pointer %p (no action implemented yet)", camParams);
+    // Future implementation: modify near/far planes for VR comfort.
+    RVR_TRACE_ONCE("[RT] RVR_CamParamsC FIRST EXIT OK");
 }

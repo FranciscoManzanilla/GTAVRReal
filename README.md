@@ -74,9 +74,12 @@ base = g_RVRData + 0x77C + slot * 0x1C
 View matrix output (written by AdjustViewInverse):
 
 ```
-slot = frameIndex & 3
-[g_RVRData + slot * 256 + 0x890] = float[16]  row-major view matrix
-[g_RVRData + slot * 256 + 0x910] = float[16]  column-major (for HLSL)
+// The proxy maintains its current frame index at 0x34.
+// ASI reads it, increments by 1, and calculates slot.
+// ASI writes the incremented counter back to 0x3C.
+slot = (proxy_frameIndex + 1) % 4
+[g_RVRData + slot * 64 + 0x910] = float[16]  row-major view matrix
+[g_RVRData + slot * 64 + 0x990] = float[16]  unknown/projection/secondary matrix
 ```
 
 ---
@@ -143,6 +146,12 @@ RealVR.ini and the 3DmiGTA proxy d3d11.dll.
   during cutscenes, leaving the proxy DLL with the unmodified game view matrix
 - HMDFovDeg INI key (60-130, default 100): replaces hardcoded 50-degree half-angle
   for symmetric projection tangents, allowing per-headset tuning
+- **AER (Alternate Eye Rendering) Sync:** The proxy maintains a frame index at `g_RVRData[0x34]`. 
+  The ASI reads it, increments by 1, calculates the slot (`% 4`), and writes back to `[0x3C]` 
+  unconditionally on every `ViewInverse` call. This guarantees perfect lockstep sync.
+- **ViewInverse Overwrite:** GTA V renders ~29 cameras per frame (main, shadows, water). 
+  All passes write to the same proxy slot. The *last* camera rendered per frame is the one 
+  finally submitted to the HMD by the proxy.
 
 ---
 

@@ -172,7 +172,8 @@ FOV1stCarHandler PROC
     SAVE_ALL
     mov   rcx, rbp              ; arg1 = pCamObj (base of "movss [rbp+0x43], xmm0")
     movss xmm1, DWORD PTR [rsp+60h]      ; arg2 = original xmm0 = fov
-    call  RVR_FOV1stCarC
+    call  RVR_FOV1stCarC                  ; returns new FOV in xmm0
+    movss DWORD PTR [rsp+60h], xmm0       ; overwrite saved xmm0 so continuation writes our FOV
     RESTORE_ALL
     mov   r11, [s_cont+16]     ; s_cont[2]
     test  r11, r11
@@ -190,7 +191,8 @@ FOV3rdHandler PROC
     SAVE_ALL
     mov   rcx, rbx
     movss xmm1, DWORD PTR [rsp+60h]
-    call  RVR_FOV3rdC
+    call  RVR_FOV3rdC                     ; returns new FOV in xmm0
+    movss DWORD PTR [rsp+60h], xmm0       ; overwrite saved xmm0 so continuation writes our FOV
     RESTORE_ALL
     mov   r11, [s_cont+24]     ; s_cont[3]
     test  r11, r11
@@ -208,9 +210,10 @@ FOV3rdHandler ENDP
 ; -----------------------------------------------------------------------------
 FOVUniHandler PROC
     SAVE_ALL
-    mov   rcx, rbx              ; arg1 = pCamObj
-    movss xmm1, DWORD PTR [rsp+60h]      ; arg2 = xmm0 if available; xmm8 not captured
-    call  RVR_FOVUniC
+    mov    rcx, rbx             ; arg1 = pCamObj
+    movaps xmm1, xmm8           ; arg2 = engine FOV (the site stores xmm8, not saved by SAVE_ALL)
+    call   RVR_FOVUniC          ; returns new FOV in xmm0
+    movaps xmm8, xmm0           ; xmm8 = our FOV (survives RESTORE_ALL, which doesn't touch xmm8)
     RESTORE_ALL
     mov   r11, [s_cont+32]     ; s_cont[4]
     test  r11, r11

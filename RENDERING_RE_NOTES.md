@@ -61,6 +61,32 @@ Intentos de forzar la alternancia de ojo desde el contador de `RVRGetFrameDesc`:
 | g_RVRData | dato 0x36D710 | buffer compartido |
 | g_fRVRGameProj | dato 0x36BDD0 | matriz proyección |
 
+## GROUND TRUTH del proxy (de d3d11_disasm.txt, función 0x86DF6 = core RVRGetFrameDesc)
+
+Confirmado por desensamble del proxy d3d11.dll:
+
+| Dato | Dirección que LEE el proxy |
+|---|---|
+| Eye | `eye = (counterPasado + 1) & 1`  (0=izq, 1=der) |
+| **View matrix** | `g_RVRData + 0x890 + eye*64` → **0x890 (izq), 0x8D0 (der)** — solo 2 slots |
+| **Projection**  | `g_RVRData + 0xA10 + eye*64` → **0xA10 (izq), 0xA50 (der)** |
+| Pose input | `g_RVRData + slot*0x1C + 0x77C` (el proxy la copia a 0x550 interno) |
+| Frame index | el PROXY lo avanza solo: `inc edi; mov [g_RVRData+0x34], edi` |
+| [0x3C] | umbral: `cmp [g_RVRData+0x3C], edi; jge` |
+| Manager | `[g_RVRData + 0x8]` = puntero a RVRMgr (0x36D718) |
+| Subida a GPU | `call 0x1F7370(recurso=[0x36BDC8]+0xC0, matriz)` |
+
+### EL GATE DEL CONGELAMIENTO (0x86E14-0x86E4B)
+El render fresco SOLO ocurre si AMBAS:
+1. `manager->vtable[0x38]()` (en `[[g_RVRData+8]]+0x38`) devuelve **TRUE**, y
+2. `g_RVRData[0x11]` (0x36D721) ≠ 0
+
+Si falla cualquiera → salta a 0x86F6B → `[0x36BDC8] = 0` (limpia el recurso GPU) → **frame congelado**. Esto coincide con "se actualiza solo al pausar/cambiar hora".
+
+→ Investigar: qué pone `g_RVRData[0x11]` y qué chequea `vtable[0x38]` del manager (probablemente "WaitGetPoses OK" / "frame de escena capturado"). El color de escena se captura por shaders (3Dmigoto), no por CopyResource.
+
+NOTA: el layout de datos que escribe el ASI actual (view 0x890/0x8D0, proj-flip 0xA10/0xA50) coincide con lo que el proxy lee. El problema restante NO es el layout — es el gate de captura (vtable[0x38] / g_RVRData[0x11]).
+
 ## Próximos pasos para cerrar AER
 
 1. RE del **Present hook del proxy** (3Dmigoto) para ver cómo y cuándo avanza
