@@ -1,0 +1,134 @@
+[
+  {
+    "name": "DF_STOP_FOR_CARS",
+    "description": "Stops before vehicles."
+  },
+  {
+    "name": "DF_STOP_FOR_PEDS",
+    "description": "Stops before peds."
+  },
+  {
+    "name": "DF_SWERVE_AROUND_ALL_CARS",
+    "description": "Avoids vehicles."
+  },
+  {
+    "name": "DF_STEER_AROUND_STATIONARY_CARS",
+    "description": "Avoids empty vehicles."
+  },
+  {
+    "name": "DF_STEER_AROUND_PEDS",
+    "description": "Avoids peds."
+  },
+  {
+    "name": "DF_STEER_AROUND_OBJECTS",
+    "description": "Avoids objects."
+  },
+  {
+    "name": "DF_DONT_STEER_AROUND_PLAYER_PED",
+    "description": "Will not avoid drive by player ped"
+  },
+  {
+    "name": "DF_STOP_AT_LIGHTS",
+    "description": "Stops at traffic lights."
+  },
+  {
+    "name": "DF_GO_OFF_ROAD_WHEN_AVOIDING",
+    "description": "When avoiding anything, allow for going off road."
+  },
+  {
+    "name": "DF_DRIVE_INTO_ONCOMING_TRAFFIC",
+    "description": "Allows going wrong way. Only does it if the correct lane is full, will try to reach the correct lane again as soon as possible."
+  },
+  {
+    "name": "DF_DRIVE_IN_REVERSE",
+    "description": "Drives in reverse gear."
+  },
+  {
+    "name": "DF_USE_WANDER_FALLBACK_INSTEAD_OF_STRAIGHT_LINE",
+    "description": "If pathfinding fails, cruise randomly instead of going on a straight line."
+  },
+  {
+    "name": "DF_AVOID_RESTRICTED_AREAS",
+    "description": "Avoid restricted areas."
+  },
+  {
+    "name": "DF_PREVENT_BACKGROUND_PATHFINDING",
+    "description": "These only work on MISSION_CRUISE."
+  },
+  {
+    "name": "DF_ADJUST_CRUISE_SPEED_BASED_ON_ROAD_SPEED",
+    "description": "Follow road speed limit."
+  },
+  {
+    "name": "DF_PREVENT_JOIN_IN_ROAD_DIRECTION_WHEN_MOVING",
+    "description": "Flag seems not to be used in Rockstar's decompiled scripts"
+  },
+  {
+    "name": "DF_DONT_AVOID_TARGET",
+    "description": "Flag seems not to be used in Rockstar's decompiled scripts"
+  },
+  {
+    "name": "DF_TARGET_POSITION_OVERRIDES_ENTITY",
+    "description": "Flag seems not to be used in Rockstar's decompiled scripts"
+  },
+  {
+    "name": "DF_USE_SHORT_CUT_LINKS",
+    "description": "Take the shortest path. Removes most pathing limits, the driver even goes on dirt roads. Use if you're going to be primarily driving off road."
+  },
+  {
+    "name": "DF_CHANGE_LANES_AROUND_OBSTRUCTIONS",
+    "description": "Will change lanes to drive around obstructions. Previously named: Allow overtaking vehicles if possible."
+  },
+  {
+    "name": "DF_AVOID_TARGET_COORS",
+    "description": "???"
+  },
+  {
+    "name": "DF_USE_SWITCHED_OFF_NODES",
+    "description": "Will allow for using switched off street nodes. Cruise tasks ignore this anyway--only used for goto's."
+  },
+  {
+    "name": "DF_PREFER_NAVMESH_ROUTE",
+    "description": "Take the shortest path. Removes most pathing limits, the driver even goes on dirt roads. Use if you're going to be primarily driving off road."
+  },
+  {
+    "name": "DF_PLANE_TAXI_MODE",
+    "description": "Only works for planes using MISSION_GOTO, will cause them to drive along the ground instead of fly."
+  },
+  {
+    "name": "DF_FORCE_STRAIGHT_LINE",
+    "description": "Ignore all pathing, goes straight to destination."
+  },
+  {
+    "name": "DF_USE_STRING_PULLING_AT_JUNCTIONS",
+    "description": "???"
+  },
+  {
+    "name": "DF_AVOID_ADVERSE_CONDITIONS",
+    "description": "Flag seems not to be used in Rockstar's decompiled scripts"
+  },
+  {
+    "name": "DF_AVOID_TURNS",
+    "description": "Flag seems not to be used in Rockstar's decompiled scripts"
+  },
+  {
+    "name": "DF_EXTEND_ROUTE_WITH_WANDERS_RESULTS",
+    "description": "Flag seems not to be used in Rockstar's decompiled scripts"
+  },
+  {
+    "name": "DF_AVOID_HIGHWAYS",
+    "description": "Avoid highways when possible, will use the highway if there is no other way to get to the destination."
+  },
+  {
+    "name": "DF_FORCE_JOIN_IN_ROAD_DIRECTION",
+    "description": "???"
+  },
+  {
+    "name": "DF_DONT_TERMINATE_TASK_WHEN_ACHIEVED",
+    "description": "???"
+  },
+  {
+    "name": "DF_LAST_FLAG",
+    "description": "???"
+  }
+]

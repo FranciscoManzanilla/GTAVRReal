@@ -154,7 +154,11 @@ extern "C" volatile long g_captureArmSkipped = 0;  // frame already armed or uns
 // a partially recovered capture path does not present one eye as VR and the
 // other as a flat/screen pass during diagnostics.
 #ifndef RVR_FORCE_MONO_FRAMEDESC
-#define RVR_FORCE_MONO_FRAMEDESC 0
+#define RVR_FORCE_MONO_FRAMEDESC 1
+#endif
+
+#ifndef RVR_MONO_FRAMEDESC_EYE
+#define RVR_MONO_FRAMEDESC_EYE 0
 #endif
 
 // Original ASI AdjustViewInverse starts with:
@@ -509,7 +513,18 @@ extern "C" void RVR_AdjustViewInverse(
                     static char s_descOut[256];
                     ++g_frameDescCalls;
                     __try {
-                        uint32_t descCounter = RVR_FORCE_MONO_FRAMEDESC ? (currentFrame | 1u) : currentFrame;
+                        uint32_t descCounter = currentFrame;
+#if RVR_FORCE_MONO_FRAMEDESC
+                        static uint32_t s_monoDescCounter = 0;
+                        const uint32_t monoEye = (uint32_t)(RVR_MONO_FRAMEDESC_EYE & 1u);
+                        uint32_t candidate = (currentFrame & ~1u) | monoEye;
+                        if (candidate <= s_monoDescCounter) {
+                            candidate = (s_monoDescCounter + 2u) & ~1u;
+                            candidate |= monoEye;
+                        }
+                        s_monoDescCounter = candidate;
+                        descCounter = candidate;
+#endif
                         *(volatile uint32_t*)(base + 0x3C) = descCounter;
                         int rc = bridge->RVRGetFrameDesc(descCounter, s_descOut);
                         static uint32_t s_logBudget = 0;
