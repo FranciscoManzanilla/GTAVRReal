@@ -1,60 +1,127 @@
 # RealVRCompat ASI
 
-Compatibility shim for the original `RealVR.asi` on newer GTA V builds, tested against
-GTA V `1.0.3788.0` with ScriptHookV `v3788.0/1013.34`.
+Compatibility shim for the original `RealVR.asi` on newer GTA V builds, tested against GTA V `1.0.3788.0` with ScriptHookV `v3788.0/1013.34`.
 
-## What It Does
+## Problem Solved
 
-`00_RealVRCompat.asi` is loaded before `RealVR.asi` and patches the original binary in
-memory only. It does not modify `RealVR.asi` on disk.
+After exiting a vehicle in first-person mode, HMD head tracking breaks - the camera no longer rotates with head movement and only responds to controller input. Hospital respawn restores tracking automatically, but this workaround is not practical during gameplay.
 
-Current responsibilities:
+## Solution
 
-- Detects `GTA5.exe` file version and maps `1.0.3788.0` to ScriptHook game version id `101`.
-- Expands RealVR's accepted version range at `RealVR+0x1CA7`.
-- Writes the detected version id to `RealVR+0x35A50`.
-- Loads the local RealVR proxy `d3d11.dll` explicitly when it is not already loaded.
-- Resolves and writes proxy exports into RealVR slots:
-  - `g_RVRData` -> `RealVR+0x38020`
-  - `g_fRVRGameProj` -> `RealVR+0x380B0`
-  - `RVRLog` -> `RealVR+0x38018`
-  - `RVRGetFrameDesc` -> `RealVR+0x380C0`
-  - `RVRGetPoseDesc` -> `RealVR+0x37FD8`
-  - `RVRSeqCheck` -> `RealVR+0x37FE0`
-  - `RVRWaitAndTrackHMD` -> `RealVR+0x37FF0`
-- NOPs internal RealVR log calls that crash when `RealVR+0x38018` is zeroed by the original init path.
-- Forces the CamMetadata resolver fallback at `RealVR+0x28D0` to avoid stale-offset crashes on newer builds.
-- Installs a vectored exception logger/repair path for known crashes while debugging.
-- Resolves or preserves the camera metadata pool slot at `RealVR+0x38098`; this is required for stable first-person and vehicle transition behavior.
-- Keeps a VEH repair for the first-person block `RealVR+0x5477..0x562A` as a guard when the metadata array is null or stale.
-- Registers a small ScriptHook script through RealVR's own imported ScriptHook slots. The script detects vehicle exit while first-person is wanted, briefly reapplies GTA first-person camera natives, and logs RealVR's first-person state around vehicle transitions.
-- Supports `RealVRCompat.ini` patch toggles for bisecting camera/control issues during first-person and vehicle transitions, including runtime control of RealVR's six original engine patches.
+**Instant Player Model Reset on Vehicle Exit**: When the player exits a vehicle, the mod instantly changes the player's ped to the same model (preserving appearance, velocity, and falling animations). This triggers RealVR's internal re-initialization, restoring HMD head tracking immediately without any freeze or animation interruption.
 
-## Install
+**Key Features**:
+- ✅ Restores HMD tracking instantly when exiting vehicles (cars, motorcycles, helicopters, airplanes)
+- ✅ Preserves exact player appearance (clothes, accessories) - captured before entering vehicle
+- ✅ Maintains falling/falling animations - velocity is preserved during model change
+- ✅ Works on death and arrest - applies same model reset to restore camera on respawn
+- ✅ No visual freeze - model change is immediate and non-blocking
+- ✅ Automatic appearance restoration - happens after falling animation completes
+
+## How It Works
+
+### Vehicle Exit Handling
+1. **Detect Exit**: When player exits a vehicle, instantly call `InstantPlayerModelReset()`
+2. **Change Model**: `SET_PLAYER_MODEL(player, savedModel)` - apply same model immediately
+3. **Restore Appearance**: After falling animation ends (via `IS_PED_FALLING`), restore all saved:
+   - Component variations (12 types: head, beard, hair, torso, legs, hands, feet, etc.)
+   - Prop variations (8 types: hats, glasses, ears, watches, bracelets, etc.)
+4. **Preserve Camera**: GTA V automatically preserves HMD tracking after model change
+
+### Appearance Capture
+- When entering vehicle: capture exact model hash and all 12 component + 8 prop variations
+- Uses `GET_PED_DRAWABLE_VARIATION`, `GET_PED_TEXTURE_VARIATION`, `GET_PED_PALETTE_VARIATION`
+- Also captures prop indices and textures via `GET_PED_PROP_INDEX`, `GET_PED_PROP_TEXTURE_INDEX`
+
+### Death/Arrest Handling
+- On death or arrest: instantly apply model change to restore camera state
+- Clean up all cached state to prevent stale data from interfering after respawn
+- Prevent camera breaking when respawning in hospital (critical for helicopters/airplanes)
+
+## Installation
 
 Place these files in the GTA V game folder:
 
-- `00_RealVRCompat.asi`
-- `RealVR.asi`
+- `00_RealVRCompat.asi` - The compatibility shim (load before RealVR.asi)
+- `RealVR.asi` - Original VR mod
 - RealVR proxy `d3d11.dll`
-- `RealVR.ini`
+- `RealVR.ini` - Configuration
 - ScriptHookV/ASI loader files
 
 The `00_` prefix is intentional so the compat shim loads before `RealVR.asi`.
 
-## Expected Log
+## Building
 
-Successful startup should include:
+**Prerequisites**:
+- Visual Studio 2022
+- ScriptHookV SDK (v3788.0 or compatible)
+- Windows SDK
 
-```text
-GTA5.exe file version=1.0.3788.0 detectedRealVRId=101
-version range RealVR+0x1CA7 ... patch=OK
-version global +0x35A50 ... target=101 patch=OK
-loaded local RVR proxy path=...\d3d11.dll
-proxy slot g_RVRData ... patch=OK
-proxy slot RVRGetFrameDesc ... patch=OK
-cam metadata fallback RealVR+0x28D0 ... patch=OK
+**Build Steps**:
+```bash
+cd "path\to\GTAVRVSC"
+"C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\msbuild.exe" RealVRCompat.vcxproj /p:Configuration=Release /p:Platform=x64
 ```
+
+Output: `bin\00_RealVRCompat.asi`
+
+## Configuration
+
+Edit `RealVRCompat.ini` to control behavior:
+
+### Vehicle/Death/Arrest Response
+- `ScriptCamReset=1` - Enable model change on vehicle exit
+- `ScriptCamResetFrames=2` - Frames before starting model change (safety margin)
+
+### Camera Restoration
+All the original patch controls still apply:
+- `ForceFallback=0` - Use metadata fallback resolver
+- `CamMetaOldOffset=1` - Use old offset for camera metadata
+- `RestoreCamMetadata=1` - Restore camera metadata if RealVR clears it
+- `RestoreRVRState=1` - Restore RealVR internal flags after transitions
+- `ActiveEnginePatches=1` - Apply RealVR's 6 engine patches
+- `EnginePatchDelaySec=70` - Delay before applying patches
+
+## Technical Details
+
+### Native Functions Used
+- `SET_PLAYER_MODEL` (0x00A1CADD00108836) - Change player model
+- `GET_ENTITY_MODEL` (0x9F47B058362C84B5) - Get current model
+- `GET_PED_DRAWABLE_VARIATION` (0x67F3780DD425D4FC) - Get component variation
+- `GET_PED_TEXTURE_VARIATION` (0x04A355E041E004E6) - Get texture variation
+- `GET_PED_PALETTE_VARIATION` (0xE3DD5F2A84B42281) - Get palette variation
+- `SET_PED_COMPONENT_VARIATION` (0x262B14F48D29DE80) - Set component variation
+- `GET_PED_PROP_INDEX` (0x898CC20EA75BACD8) - Get prop index
+- `GET_PED_PROP_TEXTURE_INDEX` (0xE131A28626F81AB2) - Get prop texture
+- `SET_PED_PROP_INDEX` (0x93376B65A266EB5F) - Set prop
+- `CLEAR_PED_PROP` (0x0943E5B8E078E76E) - Clear prop
+- `IS_PED_FALLING` (0xFB92A102F1C4DFA3) - Check if falling
+- `IS_PLAYER_BEING_ARRESTED` (0x388A47C51ABDAC8E) - Check arrest state
+
+### Global State Management
+```cpp
+// Vehicle state
+static uint32_t g_saved_player_model = 0;           // Model before entering vehicle
+static ComponentData g_saved_components[12];         // Clothes/appearance
+static PropData g_saved_props[8];                    // Accessories
+
+// Appearance restoration timing
+static bool g_restore_appearance_next_frame = false; // Defer restoration
+static int g_appearance_restore_ped = 0;            // Target ped for restoration
+
+// Delayed model change (for long ejection animations)
+static bool g_pending_delayed_model_change = false;
+static int g_pending_delayed_model_change_frames = 0;
+```
+
+### State Cleanup on Death/Arrest
+When `dead && !wasDead` or `arrested && !wasArrested`:
+1. Reset all vehicle state variables
+2. Clear appearance cache
+3. Reset RealVR state snapshots (`g_savedRVRStateValid = false`)
+4. Clear camera metadata pool references
+
+This prevents stale state from interfering after respawn in hospital.
 
 ## Known Patch Points
 
@@ -71,14 +138,57 @@ cam metadata fallback RealVR+0x28D0 ... patch=OK
 | First-person active flag | `RealVR+0x38041` |
 | Original patcher function for the 6 engine hooks | `RealVR+0x1B30` |
 
-## Notes
+## Recommended Config
 
-- Active engine trampoline patching through the original RealVR patcher is controlled by `ActiveEnginePatches` in `RealVRCompat.ini`.
-- The six original engine hooks are observed before being applied by the compat shim. RealVR normally installs them from its own `RealVR+0x1C40` path after its `main()` starts and the VR proxy data is ready. The compat fallback waits up to `EnginePatchDelaySec`, then applies them only if RealVR did not already populate all six continuation slots.
-- The local `d3d11.dll` proxy must be loaded explicitly. Without this, `g_RVRData` can remain null and the original ASI crashes at `RealVR+0x9EFB`.
-- On GTA V `1.0.3788.0`, the current recommended test config keeps the camera metadata resolver on the older `-0x28` offset path, lets RealVR run its original first-person camera block, and uses VEH as the safety net if the metadata array faults: `FirstPersonJump=0`, `VehicleCamNop=0`, `CamPoolWriteNop=0`, `ForceFallback=0`, `CamPoolResolve=1`, `CamMetaOldOffset=1`, `RestoreCamMetadata=1`, `RestoreRVRState=1`, `ActiveEnginePatches=1`, `EnginePatchDelaySec=60..70`.
-- The current vehicle-exit first-person workaround disables the old pulse paths: `FirstPersonRearmFrames=0`, `FirstPersonGuardPulseFrames=0`, `FirstPersonResetRearmFrames=0`, and `FirstPersonFlagHold=0`.
-- `FirstPersonControlFixFrames` enables GTA look controls every frame after vehicle exit while still in first person. It is currently recommended as `0`, because the broken-yaw state was observed even while this fix was active.
-- `FirstPersonUnclampFrames` releases gameplay camera yaw/pitch clamps after vehicle/ragdoll transitions. `FirstPersonResetRearmFrames` performs a short adaptive first-person rearm only when the runtime state matches the observed reset (`g_RVRData+0x840=1` and `RealVR+0x38041=0`).
-- `FirstPersonSoftReset=1` is the active approach: after vehicle exit while first-person is wanted, it briefly bridges to third-person follow camera and then returns to first-person after `FirstPersonSoftResetFrames`. This is intended to mimic the clean first-person camera rebuild observed after hospital respawn.
-- `KeepVehicleFirstPerson=1` keeps independent vehicle/bike camera contexts in first person when entering a vehicle from first-person-on-foot. This avoids `vehView=1` while `pedView=4` after enabling independent camera modes.
+For stable first-person tracking and smooth vehicle transitions:
+
+```ini
+[patches]
+FirstPersonJump=0
+VehicleCamNop=0
+CamPoolWriteNop=0
+ForceFallback=0
+CamPoolResolve=1
+CamMetaOldOffset=1
+RestoreCamMetadata=1
+RestoreRVRState=1
+ActiveEnginePatches=1
+EnginePatchDelaySec=70
+
+[script]
+ScriptCamReset=1
+ScriptCamResetFrames=2
+```
+
+## Troubleshooting
+
+**Camera still breaks after vehicle exit**:
+- Ensure `ScriptCamReset=1` in RealVRCompat.ini
+- Check that player model is being captured (look for logs: "saved player model 0x...")
+- Verify native hashes are correct for your game version
+
+**Appearance is wrong after exiting vehicle**:
+- The exact model and appearance are captured when entering the vehicle
+- If you change appearance while in vehicle, those changes are lost on exit
+- This is expected behavior - it restores what you looked like before entering
+
+**Can't rotate head after respawning from death/arrest**:
+- Model reset is applied automatically
+- If still broken, check that `RestoreRVRState=1` is enabled
+
+## Project Cleanup
+
+This project has been cleaned to include only RealVRCompat-related files:
+- Removed GTAVRReal project and other unused components
+- Removed reference/analysis files
+- Updated .gitignore to prevent re-adding removed files
+- Kept only essential files: source, headers, SDK, and build configuration
+
+## License
+
+See LICENSE.txt
+
+## Credits
+
+- Based on original RealVR by DeoNaught
+- Compatibility shim developed for GTA V build 1.0.3788.0
