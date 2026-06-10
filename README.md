@@ -11,12 +11,12 @@ After exiting a vehicle in first-person mode, HMD head tracking breaks - the cam
 **Instant Player Model Reset on Vehicle Exit**: When the player exits a vehicle, the mod instantly changes the player's ped to the same model (preserving appearance, velocity, and falling animations). This triggers RealVR's internal re-initialization, restoring HMD head tracking immediately without any freeze or animation interruption.
 
 **Key Features**:
-- ✅ Restores HMD tracking instantly when exiting vehicles (cars, motorcycles, helicopters, airplanes)
-- ✅ Preserves exact player appearance (clothes, accessories) - captured before entering vehicle
-- ✅ Maintains falling/falling animations - velocity is preserved during model change
-- ✅ Works on death and arrest - applies same model reset to restore camera on respawn
-- ✅ No visual freeze - model change is immediate and non-blocking
-- ✅ Automatic appearance restoration - happens after falling animation completes
+- Restores HMD tracking instantly when exiting vehicles (cars, motorcycles, helicopters, airplanes)
+- Preserves exact player appearance (clothes, accessories) - captured before entering vehicle
+- Maintains falling/falling animations - velocity is preserved during model change
+- Works on death and arrest - applies same model reset to restore camera on respawn
+- No visual freeze - model change is immediate and non-blocking
+- Automatic appearance restoration - happens after falling animation completes
 
 ## How It Works
 
@@ -190,5 +190,4 @@ See LICENSE.txt
 
 ## Credits
 
-- Based on original RealVR by DeoNaught
 - Compatibility shim developed for GTA V build 1.0.3788.0
