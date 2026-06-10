@@ -361,3 +361,42 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Project-specific ignores
+# Compiled objects for other projects (kept only obj_compat/)
+obj_spy/
+obj/
+
+# Other project files (only RealVRCompat is used)
+GTAVRReal.sln
+GTAVRReal.vcxproj
+GTAVRReal.vcxproj.user
+GTAVRSpy.vcxproj
+
+# Build and analysis scripts
+build_mingw.sh
+gen_array.ps1
+gen_scripts.py
+extract.ps1
+extract_d3d11.ps1
+update_header.ps1
+
+# Disassembly and analysis files
+d3d11_disasm.txt
+d3d11_strings.txt
+realvr_disasm.txt
+realvr_disasm_utf8.txt
+realvr_hex.txt
+generated_scripts.txt
+extracted_strings.txt
+
+# Reference and documentation
+reference/
+data/
+Legacy/
+Instructions\ VRV.md
+RENDERING_RE_NOTES.md
+Resumen.md
+
+# User-specific project files
+RealVRCompat.vcxproj.user

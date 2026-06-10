@@ -1,3 +1,0 @@
-*.msgpack filter=lfs diff=lfs merge=lfs -text
-*.7z filter=lfs diff=lfs merge=lfs -text
-nodes.json filter=lfs diff=lfs merge=lfs -text
