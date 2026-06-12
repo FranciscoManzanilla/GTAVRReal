@@ -188,6 +188,7 @@ This project has been cleaned to include only RealVRCompat-related files:
 
 See LICENSE.txt
 
-## Credits
+## Compatibility
 
-- Compatibility shim developed for GTA V build 1.0.3788.0
+-  GTA V build 1.0.3788.0
+-  Idk if the same code works in Enhanced
